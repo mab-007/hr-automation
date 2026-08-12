@@ -23,23 +23,34 @@ python3 -m http.server 4173
 
 Opening `index.html` directly with `file://` also works.
 
-## Publish to GitHub Pages
+## Hosting
 
-1. Create an empty repo on GitHub (e.g. `wheelz365-landing`) — no README, no .gitignore.
-2. From this folder:
+Live at **https://wheelz365.com** — GitHub Pages serving `main` / root from
+`github.com/mab-007/hr-automation`, with the domain registered at GoDaddy.
 
-   ```bash
-   git remote add origin https://github.com/<your-user>/<your-repo>.git
-   git branch -M main
-   git push -u origin main
-   ```
+Pushing to `main` redeploys; the build takes about a minute.
 
-3. On GitHub: **Settings → Pages → Build and deployment**
-   Source = *Deploy from a branch*, Branch = `main`, Folder = `/ (root)`. Save.
-4. The site appears at `https://<your-user>.github.io/<your-repo>/` within a minute or two.
+The `CNAME` file in this repo is what tells Pages which domain to answer on. **Do not
+delete it** — removing it drops the custom domain. GitHub also rewrites this file if the
+domain is changed in Settings → Pages, so `git pull` before your next push if you change
+it there.
 
-Every asset path is relative, so it works from a repo sub-path without changes. If you
-later point a custom domain at it, add a `CNAME` file containing just the domain.
+### DNS records at GoDaddy
+
+| Type | Name | Value |
+| --- | --- | --- |
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
+| CNAME | www | mab-007.github.io |
+
+GoDaddy has no ALIAS/ANAME record type, so the apex has to use the four A records.
+HTTPS is handled by GitHub via Let's Encrypt — the certificate is issued automatically
+once DNS resolves, then **Enforce HTTPS** can be ticked in Settings → Pages.
+
+Every asset path is relative, so the site also works unchanged from the
+`mab-007.github.io/hr-automation/` sub-path.
 
 ## Things to change before you go live
 
