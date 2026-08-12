@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wheelz365 — HR &amp; payroll automation</title>
+<meta name="description" content="Wheelz365 automates onboarding, attendance, leave and payroll end to end. Three companies already run payroll on Wheelz365. Get early access." />
+<meta name="theme-color" content="#050506" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Wheelz365 — HR &amp; payroll automation" />
+<meta property="og:description" content="Onboarding, attendance, leave and payroll, running on autopilot. 3 companies live. Get early access." />
+<!-- Most social scrapers need an absolute URL here. Once the site is live, swap this
+     for https://<your-user>.github.io/<repo>/assets/og-cover.png (or your custom domain). -->
+<meta property="og:image" content="assets/og-cover.png" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=general-sans@400,500,600,700&display=swap" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#hero">Skip to content</a>
+
+<!-- ============================== NAV ============================== -->
+<header class="nav" id="nav">
+  <div class="container container--wide nav__inner">
+    <a class="brand" href="#hero" aria-label="Wheelz365 home">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">Wheelz<span class="brand__name-accent">365</span></span>
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#how">Platform</a>
+      <a href="#why">Why Wheelz365</a>
+      <a href="#compare">Alternatives</a>
+      <a href="#integrations">Integrations</a>
+    </nav>
+
+    <div class="nav__actions">
+      <a class="link-quiet" href="#early-access">Talk to us</a>
+      <a class="btn btn--light btn--sm" href="#early-access">
+        Get Early Access <span class="btn__dot" aria-hidden="true">→</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav__mobile" id="mobile-menu" hidden>
+    <a href="#how">Platform</a>
+    <a href="#why">Why Wheelz365</a>
+    <a href="#compare">Alternatives</a>
+    <a href="#integrations">Integrations</a>
+    <a class="btn btn--light btn--block" href="#early-access">Get Early Access</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ============================== HERO ============================== -->
+<section class="hero" id="hero">
+  <canvas class="hero__canvas" id="wave-canvas" aria-hidden="true"></canvas>
+  <div class="hero__scrim" aria-hidden="true"></div>
+
+  <div class="container hero__content">
+    <a class="pill pill--badge reveal" href="#proof">
+      <span class="pill__dot" aria-hidden="true"></span>
+      3 companies live on Wheelz365
+      <span class="pill__chev" aria-hidden="true">›</span>
+    </a>
+
+    <h1 class="hero__title reveal">
+      HR and payroll that<br class="br-lg" /> run themselves
+    </h1>
+
+    <p class="hero__sub reveal">
+      Stop stitching payroll together in spreadsheets. Wheelz365 runs onboarding,
+      attendance, leave and the monthly payroll cycle end to end — so your people
+      team spends its time on people, not reconciliation.
+    </p>
+
+    <div class="hero__cta reveal">
+      <a class="btn btn--light btn--lg" href="#early-access">
+        Get Early Access <span class="btn__dot" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <p class="hero__note reveal">Early access is limited while we onboard the next cohort.</p>
+  </div>
+</section>
+
+<!-- ============================== PROOF / STATS ============================== -->
+<section class="section section--proof" id="proof">
+  <div class="container">
+    <h2 class="section__title section__title--left reveal">
+      Chosen by lean teams to run payroll<br class="br-lg" /> without adding headcount
+    </h2>
+
+    <!-- NOTE: replace these four numbers with your real client outcomes -->
+    <div class="stats" id="stats">
+      <div class="stats__track" id="stats-track">
+        <article class="stat-card">
+          <p class="stat-card__lead">Manufacturing firm moved 240 employees off spreadsheet payroll</p>
+          <p class="stat-card__value">3 <span class="stat-card__arrow" aria-hidden="true">↗</span></p>
+          <p class="stat-card__label">Companies live today</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-card__lead">Payroll cycle closes in a day instead of a week of chasing</p>
+          <p class="stat-card__value">6× <span class="stat-card__arrow" aria-hidden="true">↗</span></p>
+          <p class="stat-card__label">Faster monthly close</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-card__lead">Attendance, leave and salary stay in one system, always in sync</p>
+          <p class="stat-card__value">0 <span class="stat-card__arrow" aria-hidden="true">↗</span></p>
+          <p class="stat-card__label">Spreadsheets in the loop</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-card__lead">New joiners are set up, verified and payroll-ready on day one</p>
+          <p class="stat-card__value">1 day <span class="stat-card__arrow" aria-hidden="true">↗</span></p>
+          <p class="stat-card__label">Onboarding, start to finish</p>
+        </article>
+      </div>
+
+      <div class="stats__nav">
+        <button class="icon-btn" type="button" data-stats-prev aria-label="Previous">←</button>
+        <button class="icon-btn" type="button" data-stats-next aria-label="Next">→</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== HOW IT WORKS ============================== -->
+<section class="section section--how" id="how">
+  <div class="container">
+    <div class="eyebrow-wrap reveal"><span class="pill pill--eyebrow">How it works</span></div>
+
+    <div class="tabs reveal" role="tablist" aria-label="How Wheelz365 works">
+      <button class="tab is-active" role="tab" id="tab-connect" aria-controls="panel-connect" aria-selected="true" data-tab="connect">Connect</button>
+      <button class="tab" role="tab" id="tab-automate" aria-controls="panel-automate" aria-selected="false" tabindex="-1" data-tab="automate">Automate</button>
+      <button class="tab" role="tab" id="tab-approve" aria-controls="panel-approve" aria-selected="false" tabindex="-1" data-tab="approve">Approve</button>
+      <button class="tab" role="tab" id="tab-pay" aria-controls="panel-pay" aria-selected="false" tabindex="-1" data-tab="pay">Pay</button>
+      <button class="tab-pause is-playing" type="button" id="tab-pause" aria-label="Pause auto-advance">
+        <svg viewBox="0 0 24 24" class="tab-pause__icon tab-pause__icon--pause" aria-hidden="true"><rect x="8" y="6" width="2.6" height="12" rx="1"/><rect x="13.4" y="6" width="2.6" height="12" rx="1"/></svg>
+        <svg viewBox="0 0 24 24" class="tab-pause__icon tab-pause__icon--play" aria-hidden="true"><path d="M9 6.5v11l9-5.5z"/></svg>
+      </button>
+    </div>
+
+    <h2 class="section__title section__title--display reveal" id="how-title">
+      From a signed offer letter to salary in the bank,<br class="br-lg" />
+      Wheelz365 runs the cycle for you.
+    </h2>
+
+    <!-- ---------- Panel: Connect ---------- -->
+    <div class="panel-stage reveal">
+      <div class="panel is-active" role="tabpanel" id="panel-connect" aria-labelledby="tab-connect" data-panel="connect">
+        <div class="app">
+          <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+            <span class="app__crumb">Setup · Connect your stack</span>
+          </div>
+          <div class="app__body app__body--single">
+            <div class="connect-grid">
+              <div class="connect-row is-done"><span class="src src--sheets">S</span><div><b>Employee master from Excel</b><span>312 records imported · 0 errors</span></div><span class="tagline tagline--ok">Connected</span></div>
+              <div class="connect-row is-done"><span class="src src--bio">B</span><div><b>Biometric attendance devices</b><span>4 locations syncing every 15 min</span></div><span class="tagline tagline--ok">Connected</span></div>
+              <div class="connect-row is-done"><span class="src src--bank">₹</span><div><b>Bank &amp; payout account</b><span>Salary disbursal via NEFT batch file</span></div><span class="tagline tagline--ok">Connected</span></div>
+              <div class="connect-row is-live"><span class="src src--wa">W</span><div><b>WhatsApp for employee self-serve</b><span>Payslips, leave balance, requests</span></div><span class="tagline tagline--live">Syncing</span></div>
+              <div class="connect-row"><span class="src src--books">T</span><div><b>Tally / Zoho Books</b><span>Push the monthly payroll journal</span></div><span class="tagline">Connect</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- Panel: Automate ---------- -->
+      <div class="panel" role="tabpanel" id="panel-automate" aria-labelledby="tab-automate" data-panel="automate" hidden>
+        <div class="app">
+          <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span></div>
+          <div class="app__body">
+            <aside class="app__side">
+              <div class="app__search">Search…</div>
+              <p class="app__side-h">Views</p>
+              <a class="app__nav-item">Inbox <span class="chip">12</span></a>
+              <a class="app__nav-item">My requests</a>
+              <a class="app__nav-item is-active">Automations</a>
+              <p class="app__side-h">Workspaces</p>
+              <a class="app__nav-item"><i class="bullet bullet--blue"></i>People Ops</a>
+              <a class="app__nav-item"><i class="bullet bullet--violet"></i>Payroll</a>
+              <a class="app__nav-item"><i class="bullet bullet--green"></i>Compliance</a>
+              <div class="app__user"><span class="avatar">RS</span><div><b>Ritu Sharma</b><span>HR Admin</span></div></div>
+            </aside>
+
+            <div class="app__main">
+              <div class="app__head">
+                <span class="ticket-id">HR-1042</span>
+                <b class="app__head-title">Onboard new Sales Executive</b>
+                <span class="badge badge--live"><i></i>In progress</span>
+                <span class="badge badge--solid">Resolve</span>
+              </div>
+
+              <div class="thread">
+                <p class="thread__msg">Priya Nair signed her offer letter. She joins on the 1st — please start onboarding and add her to this month's payroll.</p>
+
+                <div class="thread__agent">
+                  <span class="agent-mark" aria-hidden="true"></span>
+                  <div>
+                    <p class="thread__meta"><b>Wheelz365 AI</b> <span>10:43 AM</span> <span class="tag-auto">Automated</span></p>
+                    <p class="thread__msg">I've started the New Joiner workflow for Priya Nair. Here's the status of the automated setup:</p>
+
+                    <div class="checklist">
+                      <div class="checklist__head"><b>New joiner: Priya Nair</b><span>3 of 4 completed</span></div>
+                      <div class="checklist__row is-ok"><i></i>Employee record &amp; ID created<span>WZ-0313</span></div>
+                      <div class="checklist__row is-ok"><i></i>KYC + bank account verified<span>Success</span></div>
+                      <div class="checklist__row is-ok"><i></i>PF &amp; ESI registration filed<span>Success</span></div>
+                      <div class="checklist__row is-pending"><i></i>Salary structure &amp; CTC breakup<span class="await">Awaiting approval</span></div>
+                      <div class="checklist__actions">
+                        <button class="btn btn--ghost btn--xs" type="button">Cancel</button>
+                        <button class="btn btn--light btn--xs" type="button">Approve structure</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="app__composer">Reply or type a command…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- Panel: Approve ---------- -->
+      <div class="panel" role="tabpanel" id="panel-approve" aria-labelledby="tab-approve" data-panel="approve" hidden>
+        <div class="app">
+          <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+            <span class="app__crumb">Payroll · March cycle · Approvals</span>
+          </div>
+          <div class="app__body app__body--single">
+            <div class="approve">
+              <div class="approve__summary">
+                <div><span>Employees in this run</span><b>312</b></div>
+                <div><span>Attendance exceptions</span><b>4</b></div>
+                <div><span>Net payable</span><b>₹ 78,42,150</b></div>
+                <div><span>Ready for release</span><b class="ok">308</b></div>
+              </div>
+              <div class="approve__rows">
+                <div class="approve__row"><span class="avatar avatar--sm">AK</span><div><b>Arjun Kumar</b><span>Overtime 12h flagged for review</span></div><span class="tagline tagline--warn">Needs approval</span></div>
+                <div class="approve__row"><span class="avatar avatar--sm">SM</span><div><b>Sneha Menon</b><span>Loss of pay 2 days · leave balance 0</span></div><span class="tagline tagline--warn">Needs approval</span></div>
+                <div class="approve__row"><span class="avatar avatar--sm">PN</span><div><b>Priya Nair</b><span>New joiner · pro-rated from the 1st</span></div><span class="tagline tagline--ok">Auto-cleared</span></div>
+                <div class="approve__row"><span class="avatar avatar--sm">VR</span><div><b>Vikram Rao</b><span>Reimbursement ₹ 8,400 with receipts</span></div><span class="tagline tagline--ok">Auto-cleared</span></div>
+              </div>
+              <div class="approve__foot">
+                <span>Everything else reconciled automatically.</span>
+                <button class="btn btn--light btn--xs" type="button">Approve all &amp; lock cycle</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- Panel: Pay ---------- -->
+      <div class="panel" role="tabpanel" id="panel-pay" aria-labelledby="tab-pay" data-panel="pay" hidden>
+        <div class="app">
+          <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+            <span class="app__crumb">Payroll · March cycle · Run</span>
+          </div>
+          <div class="app__body app__body--single">
+            <div class="payrun">
+              <div class="payrun__head">
+                <div><b>March payroll</b><span>312 employees · locked 26 Mar, 6:10 PM</span></div>
+                <button class="btn btn--light btn--xs" type="button">Release payout ₹ 78,42,150</button>
+              </div>
+              <table class="payrun__table">
+                <thead><tr><th>Employee</th><th>Gross</th><th>Deductions</th><th>Net pay</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td>Arjun Kumar</td><td>₹ 74,000</td><td>₹ 9,320</td><td>₹ 64,680</td><td><span class="tagline tagline--ok">Ready</span></td></tr>
+                  <tr><td>Sneha Menon</td><td>₹ 58,500</td><td>₹ 11,240</td><td>₹ 47,260</td><td><span class="tagline tagline--ok">Ready</span></td></tr>
+                  <tr><td>Priya Nair</td><td>₹ 62,000</td><td>₹ 7,880</td><td>₹ 54,120</td><td><span class="tagline tagline--ok">Ready</span></td></tr>
+                  <tr><td>Vikram Rao</td><td>₹ 91,000</td><td>₹ 12,610</td><td>₹ 78,390</td><td><span class="tagline tagline--ok">Ready</span></td></tr>
+                </tbody>
+              </table>
+              <div class="payrun__foot">
+                <span class="tagline tagline--ok">Payslips queued</span>
+                <span class="tagline tagline--ok">PF &amp; ESI challans generated</span>
+                <span class="tagline tagline--ok">TDS schedule updated</span>
+                <span class="tagline tagline--ok">Journal pushed to books</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== WHY ============================== -->
+<section class="section section--why" id="why">
+  <div class="container">
+    <div class="eyebrow-wrap eyebrow-wrap--left reveal"><span class="pill pill--eyebrow">Why Wheelz365</span></div>
+
+    <h2 class="section__title section__title--left reveal">
+      Built for speed. Payroll that moves<br class="br-lg" /> as fast as your team hires.
+    </h2>
+    <p class="section__sub section__sub--left reveal">
+      Stop doing the things that don't scale. Wheelz365 handles onboarding, attendance,
+      statutory filings and the monthly run so your HR team can focus on the people side.
+    </p>
+
+    <div class="why">
+      <div class="accordion reveal" id="accordion">
+        <div class="acc-item is-open">
+          <button class="acc-item__head" type="button" aria-expanded="true">
+            <span class="acc-item__icon" aria-hidden="true">⚡</span>
+            <span class="acc-item__title">Onboarding on day zero</span>
+          </button>
+          <div class="acc-item__body">
+            <p>Offer letter, employee record, KYC, bank verification, PF and ESI registration
+              and payroll enrolment fire off the moment a candidate signs. No forms to re-key.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-item__head" type="button" aria-expanded="false">
+            <span class="acc-item__icon" aria-hidden="true">◷</span>
+            <span class="acc-item__title">Attendance and leave, always in sync</span>
+          </button>
+          <div class="acc-item__body">
+            <p>Biometric punches, shift rosters, holidays and approved leave flow straight into
+              the salary calculation. Loss of pay and overtime are computed as the month runs, not after it.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-item__head" type="button" aria-expanded="false">
+            <span class="acc-item__icon" aria-hidden="true">₹</span>
+            <span class="acc-item__title">One-run payroll</span>
+          </button>
+          <div class="acc-item__body">
+            <p>Lock the cycle and Wheelz365 computes gross, deductions and net pay, generates the
+              bank payout file, issues payslips and posts the journal to your books in a single run.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-item__head" type="button" aria-expanded="false">
+            <span class="acc-item__icon" aria-hidden="true">◈</span>
+            <span class="acc-item__title">Statutory work handled</span>
+          </button>
+          <div class="acc-item__body">
+            <p>PF, ESI, professional tax and TDS schedules are prepared with the run and tracked to
+              the filing date, with a full audit trail of who approved what and when.</p>
+          </div>
+        </div>
+
+        <div class="acc-item">
+          <button class="acc-item__head" type="button" aria-expanded="false">
+            <span class="acc-item__icon" aria-hidden="true">◎</span>
+            <span class="acc-item__title">Employee self-serve</span>
+          </button>
+          <div class="acc-item__body">
+            <p>Payslips, tax declarations, leave balances and reimbursement claims sit with the
+              employee on WhatsApp and the portal — so HR stops being a ticket queue.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow reveal" aria-hidden="true">
+        <div class="flow__inner">
+          <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Offer letter signed</span><span class="flow__dots">···</span></div>
+          <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Create employee record</span><span class="flow__dots">···</span></div>
+          <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Verify KYC &amp; bank details</span><span class="flow__dots">···</span></div>
+          <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Register PF &amp; ESI</span><span class="flow__dots">···</span></div>
+          <div class="flow__card flow__card--hero">
+            <span class="kbd kbd--action">Action</span>
+            <span>Enrol in the March payroll cycle, assign shift roster and send the welcome kit on WhatsApp.</span>
+            <span class="flow__zap">⚡</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== COMPARE ============================== -->
+<section class="section section--compare" id="compare">
+  <div class="container">
+    <div class="eyebrow-wrap reveal"><span class="pill pill--eyebrow">Vs alternatives</span></div>
+    <h2 class="section__title reveal">Built for lean teams</h2>
+    <p class="section__sub reveal">
+      Spreadsheets break at scale, legacy HRMS takes months to roll out, and an outsourced
+      consultant is a black box. Wheelz365 runs the cycle itself and keeps you in control of it.
+    </p>
+
+    <div class="cards-3">
+      <article class="card reveal">
+        <div class="card__head"><span class="glyph glyph--green">S</span><b>Spreadsheets</b></div>
+        <p>Cheap until the month you get it wrong. Every joiner, leave day and arrear is re-keyed
+          by hand, and nobody can tell you which version is final.</p>
+        <a class="pill pill--ghost" href="#early-access">Move off them <span aria-hidden="true">›</span></a>
+      </article>
+
+      <article class="card reveal">
+        <div class="card__head"><span class="glyph glyph--blue">H</span><b>Legacy HRMS</b></div>
+        <p>Powerful, but priced and built for enterprises with a dedicated HR systems team.
+          Months of implementation before your first payroll run.</p>
+        <a class="pill pill--ghost" href="#early-access">See the difference <span aria-hidden="true">›</span></a>
+      </article>
+
+      <article class="card reveal">
+        <div class="card__head"><span class="glyph glyph--violet">C</span><b>Outsourced payroll</b></div>
+        <p>You email a sheet and hope. Wheelz365 gives you the same hands-off outcome with the
+          data, the audit trail and the timing in your hands.</p>
+        <a class="pill pill--ghost" href="#early-access">Take it in-house <span aria-hidden="true">›</span></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== INTEGRATIONS & SECURITY ============================== -->
+<section class="section section--integrations" id="integrations">
+  <div class="container">
+    <div class="eyebrow-wrap reveal"><span class="pill pill--eyebrow">Integrations &amp; security</span></div>
+    <h2 class="section__title reveal">Connect the stack you already run on</h2>
+    <p class="section__sub reveal">
+      Wheelz365 plugs into your attendance devices, bank, accounting software and the tools your
+      team lives in — and every automated action lands in an audit trail you can hand to a reviewer.
+    </p>
+    <div class="section__cta reveal">
+      <a class="btn btn--light" href="#early-access">Get Early Access <span class="btn__dot" aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="slab reveal">
+      <div class="slab__aside">
+        <p>Connect attendance, banking, accounting and messaging systems</p>
+      </div>
+      <ul class="logo-grid">
+        <li><span class="glyph glyph--sm glyph--green">B</span>Biometric devices</li>
+        <li><span class="glyph glyph--sm glyph--blue">E</span>Excel / CSV import</li>
+        <li><span class="glyph glyph--sm glyph--violet">T</span>Tally</li>
+        <li><span class="glyph glyph--sm glyph--amber">Z</span>Zoho Books</li>
+        <li><span class="glyph glyph--sm glyph--green">₹</span>Bank payout files</li>
+        <li><span class="glyph glyph--sm glyph--blue">G</span>Google Workspace</li>
+        <li><span class="glyph glyph--sm glyph--violet">S</span>Slack</li>
+        <li><span class="glyph glyph--sm glyph--green">W</span>WhatsApp</li>
+        <li><span class="glyph glyph--sm glyph--amber">P</span>PF &amp; ESI portals</li>
+      </ul>
+    </div>
+
+    <div class="slab reveal">
+      <div class="slab__aside">
+        <p>Access, approvals and audit controls built for payroll data</p>
+      </div>
+      <ul class="chip-grid">
+        <li>Role-based access</li>
+        <li>Maker–checker approvals</li>
+        <li>Full audit trail</li>
+        <li>Encrypted in transit &amp; at rest</li>
+        <li>Two-factor authentication</li>
+        <li>Field-level permissions</li>
+        <li>Salary data masking</li>
+        <li>Single sign-on</li>
+        <li>Export your data anytime</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== HR TEAM IN AN AGENT ============================== -->
+<section class="section section--team" id="team">
+  <div class="container">
+    <div class="eyebrow-wrap eyebrow-wrap--left reveal"><span class="pill pill--eyebrow">No extra headcount needed</span></div>
+
+    <div class="team__head">
+      <div class="reveal">
+        <h2 class="section__title section__title--left">An entire people ops team, in an agent.</h2>
+        <p class="section__sub section__sub--left">
+          Wheelz365 gives you the output of a full HR and payroll function without the headcount.
+          You keep the judgement calls; we take the repetitive month-end work.
+        </p>
+      </div>
+      <a class="pill pill--ghost pill--lg reveal" href="#early-access">Get early access <span aria-hidden="true">›</span></a>
+    </div>
+
+    <div class="grid-2x2 reveal">
+      <div class="quad"><h3><span aria-hidden="true">✓</span>Runs the routine work</h3><p>Onboarding, attendance reconciliation, leave accrual, payslips and filings happen without anyone opening a spreadsheet.</p></div>
+      <div class="quad"><h3><span aria-hidden="true">✓</span>Humans stay in the loop</h3><p>Anything sensitive — salary revisions, loss of pay, final settlements — routes to you for a one-click approval before it moves.</p></div>
+      <div class="quad"><h3><span aria-hidden="true">✓</span>Live in days, not quarters</h3><p>Import your employee master, connect attendance and your bank, and run your first cycle on Wheelz365 the same month.</p></div>
+      <div class="quad"><h3><span aria-hidden="true">✓</span>Scales as you hire</h3><p>Ten people or a thousand, across locations and shift patterns — the cycle takes the same afternoon it always did.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== EARLY ACCESS ============================== -->
+<section class="section section--cta" id="early-access">
+  <div class="container cta">
+    <div class="cta__copy reveal">
+      <h2 class="section__title section__title--left">Get early access</h2>
+      <p class="section__sub section__sub--left">
+        Three companies already run payroll on Wheelz365. We're onboarding the next few
+        directly with our team — tell us about yours and we'll set up a walkthrough.
+      </p>
+      <ul class="cta__list">
+        <li>A 30-minute walkthrough on your actual payroll structure</li>
+        <li>Employee master and attendance import handled by us</li>
+        <li>Your first cycle run alongside your current process</li>
+      </ul>
+    </div>
+
+    <form class="cta__form reveal" id="early-access-form" novalidate>
+      <div class="field-row">
+        <label class="field"><span class="sr-only">First name</span>
+          <input type="text" name="first_name" placeholder="First name" autocomplete="given-name" required />
+        </label>
+        <label class="field"><span class="sr-only">Last name</span>
+          <input type="text" name="last_name" placeholder="Last name" autocomplete="family-name" />
+        </label>
+      </div>
+      <label class="field"><span class="sr-only">Work email</span>
+        <input type="email" name="email" placeholder="Work email address" autocomplete="email" required />
+      </label>
+      <label class="field"><span class="sr-only">Company</span>
+        <input type="text" name="company" placeholder="Company name" autocomplete="organization" required />
+      </label>
+      <div class="field-row">
+        <label class="field field--select"><span class="sr-only">Team size</span>
+          <select name="team_size" required>
+            <option value="" selected disabled>Team size</option>
+            <option>1–25 employees</option>
+            <option>26–100 employees</option>
+            <option>101–500 employees</option>
+            <option>500+ employees</option>
+          </select>
+        </label>
+        <label class="field"><span class="sr-only">Phone number</span>
+          <input type="tel" name="phone" placeholder="Phone number" autocomplete="tel" />
+        </label>
+      </div>
+
+      <button class="btn btn--light btn--block btn--lg" type="submit">Get Early Access</button>
+      <p class="cta__fineprint" id="form-status" role="status">
+        We'll only use this to get in touch about early access.
+      </p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <a class="brand" href="#hero" aria-label="Wheelz365 home">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__name">Wheelz<span class="brand__name-accent">365</span></span>
+      </a>
+      <p>HR and payroll automation for growing companies. Onboarding, attendance,
+        leave and the monthly run — handled end to end.</p>
+      <div class="footer__social">
+        <a href="#early-access" aria-label="LinkedIn"><span aria-hidden="true">in</span></a>
+        <a href="mailto:hello@wheelz365.com" aria-label="Email us"><span aria-hidden="true">@</span></a>
+      </div>
+    </div>
+
+    <nav class="footer__col" aria-label="Platform">
+      <p class="footer__h">Platform</p>
+      <a href="#how">How it works</a>
+      <a href="#why">Why Wheelz365</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#integrations">Security</a>
+    </nav>
+
+    <nav class="footer__col" aria-label="Use cases">
+      <p class="footer__h">Use cases</p>
+      <a href="#how">Employee onboarding</a>
+      <a href="#how">Payroll runs</a>
+      <a href="#why">Attendance &amp; leave</a>
+      <a href="#why">Statutory compliance</a>
+    </nav>
+
+    <nav class="footer__col" aria-label="Company">
+      <p class="footer__h">Company</p>
+      <a href="#early-access">Early access</a>
+      <a href="#proof">Customers</a>
+      <a href="mailto:hello@wheelz365.com">Contact</a>
+    </nav>
+  </div>
+
+  <div class="container footer__base">
+    <p>© <span id="year">2026</span> Wheelz365. All rights reserved.</p>
+    <p>hello@wheelz365.com</p>
+  </div>
+</footer>
+
+<script src="assets/js/waves.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
