@@ -458,6 +458,9 @@ table { border-collapse: collapse; width: 100%; }
   /* panels without a sidebar must not inherit the 224px rail */
   .app__body--single { grid-template-columns: 1fr; }
 }
+/* centre the content instead of stretching it, so a short panel gets even
+   padding rather than a pile of dead space under it */
+.app__body--single { align-content: center; }
 
 .app__side {
   display: none;
@@ -598,15 +601,18 @@ table { border-collapse: collapse; width: 100%; }
 .src--books  { background: linear-gradient(140deg, #ffb020, #c97c05); }
 
 .tagline {
-  font-size: 0.6875rem; padding: 4px 10px; border-radius: 999px;
+  font-size: 0.6875rem; line-height: 1.5; padding: 4px 10px; border-radius: 999px;
   border: 1px solid var(--line); color: var(--fg-dim); white-space: nowrap;
+  align-self: center;   /* never stretch to a flex/grid parent's height */
 }
 .tagline--ok { color: var(--accent); border-color: rgba(23, 184, 119, 0.35); background: rgba(23, 184, 119, 0.1); }
 .tagline--live { color: var(--accent-blue); border-color: rgba(77, 123, 255, 0.35); background: rgba(77, 123, 255, 0.1); }
 .tagline--warn { color: var(--accent-amber); border-color: rgba(255, 176, 32, 0.35); background: rgba(255, 176, 32, 0.1); }
 
 /* approve panel */
-.approve { display: grid; gap: 16px; }
+/* align-content:start — the panel has a min-height, and a stretched auto row
+   would blow the status chips up into ellipses */
+.approve { display: grid; gap: 16px; align-content: start; }
 .approve__summary {
   display: grid; gap: 10px;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -633,7 +639,7 @@ table { border-collapse: collapse; width: 100%; }
 }
 
 /* pay panel */
-.payrun { display: grid; gap: 16px; }
+.payrun { display: grid; gap: 16px; align-content: start; }
 .payrun__head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
 .payrun__head b { display: block; font-size: 0.9375rem; font-weight: 500; }
 .payrun__head span { font-size: 0.75rem; color: var(--fg-dim); }
@@ -645,7 +651,7 @@ table { border-collapse: collapse; width: 100%; }
 }
 .payrun__table td { padding: 12px 12px 12px 0; border-bottom: 1px solid var(--line); color: var(--fg-muted); }
 .payrun__table td:first-child { color: var(--fg); }
-.payrun__foot { display: flex; flex-wrap: wrap; gap: 8px; }
+.payrun__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 
 /* ------------------------------ why / accordion ------------------------- */
 .why {
