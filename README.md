@@ -37,6 +37,8 @@ it there.
 
 ### DNS records at GoDaddy
 
+Target state:
+
 | Type | Name | Value |
 | --- | --- | --- |
 | A | @ | 185.199.108.153 |
@@ -46,8 +48,20 @@ it there.
 | CNAME | www | mab-007.github.io |
 
 GoDaddy has no ALIAS/ANAME record type, so the apex has to use the four A records.
-HTTPS is handled by GitHub via Let's Encrypt — the certificate is issued automatically
-once DNS resolves, then **Enforce HTTPS** can be ticked in Settings → Pages.
+
+Two records have to be *removed* first, both left over from earlier setups:
+
+- `@` currently resolves to `3.33.130.190` / `15.197.148.33`, which serve GoDaddy's parking
+  lander. Delete those A records (and switch off Domain Forwarding if it is on, or it will
+  keep re-adding them).
+- `www` is a CNAME to `wheelz-web-alb-1330214366.ap-south-1.elb.amazonaws.com`, an AWS load
+  balancer that no longer exists — the name does not resolve, so `www` is dead today.
+  Replacing it with `mab-007.github.io` both fixes it and clears a dangling-CNAME record.
+
+HTTPS is handled by GitHub via Let's Encrypt: the certificate is issued automatically once
+the apex resolves to the four IPs above, after which **Enforce HTTPS** can be ticked in
+Settings → Pages. Do not tick it before the certificate exists — the option is disabled
+until then.
 
 Every asset path is relative, so the site also works unchanged from the
 `mab-007.github.io/hr-automation/` sub-path.
