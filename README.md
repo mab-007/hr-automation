@@ -25,7 +25,7 @@ Opening `index.html` directly with `file://` also works.
 
 ## Hosting
 
-Live at **https://wheelz365.com** — GitHub Pages serving `main` / root from
+Live at **https://www.wheelz365.com** — GitHub Pages serving `main` / root from
 `github.com/mab-007/hr-automation`, with the domain registered at GoDaddy.
 
 Pushing to `main` redeploys; the build takes about a minute.
@@ -37,29 +37,34 @@ it there.
 
 ### DNS records at GoDaddy
 
+The custom domain in Settings → Pages is **`www.wheelz365.com`**, so `www` is the canonical
+host and the CNAME file must read `www.wheelz365.com`.
+
 Target state:
 
-| Type | Name | Value |
-| --- | --- | --- |
-| A | @ | 185.199.108.153 |
-| A | @ | 185.199.109.153 |
-| A | @ | 185.199.110.153 |
-| A | @ | 185.199.111.153 |
-| CNAME | www | mab-007.github.io |
+| Type | Name | Value | Purpose |
+| --- | --- | --- | --- |
+| CNAME | www | mab-007.github.io | serves the site — **required** |
+| A | @ | 185.199.108.153 | apex → redirects to www |
+| A | @ | 185.199.109.153 | " |
+| A | @ | 185.199.110.153 | " |
+| A | @ | 185.199.111.153 | " |
 
-GoDaddy has no ALIAS/ANAME record type, so the apex has to use the four A records.
+Only the `www` CNAME is strictly required. The four A records exist so that
+`wheelz365.com` reaches GitHub, which then redirects it to `www.wheelz365.com`.
+GoDaddy has no ALIAS/ANAME record type, so the apex has to use A records.
 
 Two records have to be *removed* first, both left over from earlier setups:
 
-- `@` currently resolves to `3.33.130.190` / `15.197.148.33`, which serve GoDaddy's parking
-  lander. Delete those A records (and switch off Domain Forwarding if it is on, or it will
-  keep re-adding them).
-- `www` is a CNAME to `wheelz-web-alb-1330214366.ap-south-1.elb.amazonaws.com`, an AWS load
-  balancer that no longer exists — the name does not resolve, so `www` is dead today.
-  Replacing it with `mab-007.github.io` both fixes it and clears a dangling-CNAME record.
+- `www` is currently a CNAME to `wheelz-web-alb-1330214366.ap-south-1.elb.amazonaws.com`,
+  an AWS load balancer that no longer exists — the name does not resolve, so `www` is dead
+  today. Replacing it with `mab-007.github.io` both fixes it and clears a dangling CNAME.
+- `@` resolves to `3.33.130.190` / `15.197.148.33`, which serve GoDaddy's parking lander.
+  Delete those A records, and switch off Domain Forwarding if it is on or it will keep
+  re-adding them.
 
 HTTPS is handled by GitHub via Let's Encrypt: the certificate is issued automatically once
-the apex resolves to the four IPs above, after which **Enforce HTTPS** can be ticked in
+`www` resolves to `mab-007.github.io`, after which **Enforce HTTPS** can be ticked in
 Settings → Pages. Do not tick it before the certificate exists — the option is disabled
 until then.
 
