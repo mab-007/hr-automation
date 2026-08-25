@@ -49,7 +49,37 @@
 
   --ease: cubic-bezier(0.22, 0.68, 0.32, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---- depth ------------------------------------------------------------
+     On a near-black theme, blur() over near-black returns near-black. The
+     perceived "glass" is really three cheap things: a semi-opaque fill, a 1px
+     inset top highlight, and a hairline border. backdrop-filter is the least
+     visible and most expensive ingredient, so it is rationed to exactly one
+     element (.nav) and only while nothing animates behind it.
+     ---------------------------------------------------------------------- */
+  --z-atmos: -2;
+  --z-scrim: -1;
+  --z-lift:   2;
+  --z-grain: 40;
+
+  --lift-1: 0 10px 24px -12px rgba(0, 0, 0, 0.7);
+  --lift-2: 0 26px 60px -20px rgba(0, 0, 0, 0.75), 0 4px 12px -6px rgba(0, 0, 0, 0.5);
+  --lift-3: 0 48px 110px -28px rgba(0, 0, 0, 0.85), 0 8px 20px -8px rgba(0, 0, 0, 0.55);
+
+  --sheen-top: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  --sheen-bot: inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+
+  --glass-fill: rgba(13, 13, 16, 0.72);
 }
+
+/* inherits:false is load-bearing — an inherited custom property invalidates the
+   whole subtree's computed style on every change, and .app has hundreds of
+   descendants. This scopes invalidation to the one element that declares it. */
+@property --rx { syntax: '<angle>';  inherits: false; initial-value: 0deg; }
+@property --ry { syntax: '<angle>';  inherits: false; initial-value: 0deg; }
+@property --mx { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --my { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --lz { syntax: '<length>'; inherits: false; initial-value: 0px; }
 
 /* ------------------------------ reset ----------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
@@ -67,6 +97,8 @@ body {
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-x: clip;   /* clip also fixes the classic "overflow-x:hidden on body
+                         silently kills position:sticky" trap */
 }
 
 h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
@@ -114,6 +146,12 @@ table { border-collapse: collapse; width: 100%; }
   padding-block: clamp(72px, 9vw, 132px);
   border-top: 1px solid var(--line);
   background: var(--bg);
+  /* isolate: without a stacking context, a z-index:-1 glow pseudo-element
+     escapes behind <body> and disappears. contain layout+style (never paint —
+     that would clip the glow) stops an invalidation in one section crossing
+     into another while the hero canvas is saturating the compositor. */
+  isolation: isolate;
+  contain: layout style;
 }
 .section--cap { border-top: 0; }
 
@@ -223,8 +261,13 @@ table { border-collapse: collapse; width: 100%; }
   font-size: 0.8125rem;
   letter-spacing: -0.005em;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(8px);
+  /* No backdrop-filter: this sits over the animating canvas, so the blur would
+     re-evaluate every frame. A layered fill plus an inset sheen is visually
+     equivalent here and free. */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
+    rgba(10, 10, 14, 0.55);
+  box-shadow: var(--sheen-top);
   color: var(--fg);
 }
 .pill--badge {
@@ -260,10 +303,18 @@ table { border-collapse: collapse; width: 100%; }
   transition: background-color 0.25s var(--ease), border-color 0.25s var(--ease);
   border-bottom: 1px solid transparent;
 }
+/* The nav is the ONLY element on the site permitted backdrop-filter, and even
+   then only once the wave canvas has stopped repainting behind it. While the
+   canvas animates, a full-width blur re-reads and re-blurs its backdrop every
+   single frame — so during that window we fall back to an opaque gradient that
+   reads almost identically. waves.js publishes the flag. */
 .nav.is-stuck {
-  background: rgba(6, 6, 8, 0.78);
-  backdrop-filter: blur(14px);
+  background: linear-gradient(180deg, rgba(6, 6, 8, 0.94), rgba(6, 6, 8, 0.82));
   border-bottom-color: var(--line);
+}
+:root[data-canvas="idle"] .nav.is-stuck {
+  background: rgba(6, 6, 8, 0.72);
+  backdrop-filter: blur(14px);
 }
 .nav__inner {
   display: flex; align-items: center; gap: 24px;
@@ -296,8 +347,8 @@ table { border-collapse: collapse; width: 100%; }
 .nav__mobile {
   display: grid; gap: 4px;
   padding: 10px var(--pad) 22px;
+  /* fill is 97% opaque, so a blur behind it would be invisible - removed */
   background: rgba(8, 8, 10, 0.97);
-  backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
 }
 .nav__mobile a { padding: 11px 2px; color: var(--fg-muted); font-size: 0.9375rem; }
@@ -319,6 +370,7 @@ table { border-collapse: collapse; width: 100%; }
   display: flex; align-items: center;
   padding-block: 140px 90px;
   overflow: hidden;
+  overflow: clip;
   isolation: isolate;
 }
 .hero__canvas {
@@ -389,6 +441,7 @@ table { border-collapse: collapse; width: 100%; }
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  overflow: clip;
 }
 @media (min-width: 640px) { .cap-strip { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1000px) { .cap-strip { grid-template-columns: repeat(4, 1fr); } }
@@ -474,6 +527,7 @@ table { border-collapse: collapse; width: 100%; }
   background: linear-gradient(180deg, #101015, #0a0a0d);
   box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6);
   overflow: hidden;
+  overflow: clip;
   max-width: 1080px;
   margin-inline: auto;
 }
@@ -738,6 +792,7 @@ table { border-collapse: collapse; width: 100%; }
     conic-gradient(from 220deg at 30% 60%, #3d2a6e, #17546a, #6b3049, #26407e, #3d2a6e);
   padding: 20px;
   overflow: hidden;
+  overflow: clip;
 }
 /* display:grid would otherwise beat the [hidden] attribute and every archetype's
    flow would render stacked on top of the others */
@@ -745,13 +800,16 @@ table { border-collapse: collapse; width: 100%; }
 .flow__inner { display: grid; gap: 12px; }
 .flow__card {
   display: flex; align-items: center; gap: 11px;
-  background: rgba(12, 12, 16, 0.72);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012)),
+    rgba(12, 12, 16, 0.86);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 12px 14px;
   font-size: 0.8125rem;
   color: var(--fg-muted);
-  backdrop-filter: blur(6px);
+  /* was blur(6px) x ~5 visible - baked into the fill instead */
+  box-shadow: var(--sheen-top);
 }
 .flow__card--hero {
   background: rgba(16, 16, 24, 0.9);
@@ -845,6 +903,7 @@ table { border-collapse: collapse; width: 100%; }
   background: linear-gradient(180deg, var(--panel-2), var(--panel));
   display: grid; grid-template-columns: 1fr;
   overflow: hidden;
+  overflow: clip;
 }
 @media (min-width: 800px) { .grid-2x2 { grid-template-columns: 1fr 1fr; } }
 .quad { padding: clamp(22px, 2.6vw, 34px); border-top: 1px solid var(--line); }
@@ -1226,6 +1285,7 @@ table { border-collapse: collapse; width: 100%; }
   padding-block: clamp(104px, 13vw, 168px) clamp(48px, 6vw, 76px);
   border-bottom: 1px solid var(--line);
   overflow: hidden;
+  overflow: clip;
 }
 .page-head::before {
   content: '';
@@ -1277,6 +1337,7 @@ table { border-collapse: collapse; width: 100%; }
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  overflow: clip;
 }
 @media (min-width: 860px) { .blocks { grid-template-columns: 1fr 1fr; } }
 .block {
@@ -1422,18 +1483,42 @@ table { border-collapse: collapse; width: 100%; }
 .form-fallback { margin-top: 12px; font-size: 0.75rem; color: var(--fg-dim); }
 
 /* ------------------------------ reveal ---------------------------------- */
-.js .reveal { opacity: 0; transform: translateY(12px); }
+/* Below-the-fold only. Anything above the fold must use .hero-in instead —
+   see the note there. Stagger comes from --i in the markup rather than a JS
+   timer, so it costs no main-thread work while the canvas is running. */
+.js .reveal { opacity: 0; transform: translate3d(0, 14px, 0); }
 .js .reveal.is-in {
   opacity: 1; transform: none;
-  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  transition: opacity 0.45s var(--ease-out) calc(var(--i, 0) * 55ms),
+              transform 0.45s var(--ease-out) calc(var(--i, 0) * 55ms);
+}
+
+/* ------------------------------ hero entrance ---------------------------- */
+/* NEVER animate opacity above the fold. The <h1> is the LCP element, and Chrome
+   does not count a zero-opacity element as painted — putting .reveal on it cost
+   100-300ms of LCP for a fade on content that is already visible at first
+   paint. This moves on transform alone, so LCP fires immediately. */
+.js .hero-in {
+  animation: hero-in 0.62s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes hero-in {
+  from { transform: translate3d(0, 16px, 0); }
+  to   { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
+  .js .hero-in { animation: none !important; }
   .panel.is-active { animation: none; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+    /* delay is not a duration — without this, a `transition: visibility 0s
+       linear .16s` still holds for its full 160ms and outgoing panes overlap
+       incoming ones. The duration override alone does not catch it. */
+    transition-delay: 0s !important;
+    animation-iteration-count: 1 !important;
   }
 }

@@ -14,14 +14,28 @@
 
   document.documentElement.classList.add('js');
 
-  /* ------------------------------ nav ------------------------------ */
+  /* ------------------------------ nav ------------------------------
+     A sentinel rather than a scroll listener. The old version ran a callback on
+     every scroll event, on the same main thread the hero canvas is rendering on.
+     This fires twice in the page's lifetime and cannot land mid-frame.
+     ------------------------------------------------------------------ */
   var nav = $('#nav');
   if (nav) {
-    var onScroll = function () {
+    if ('IntersectionObserver' in window) {
+      var sentinel = document.createElement('div');
+      sentinel.setAttribute('aria-hidden', 'true');
+      sentinel.style.cssText =
+        'position:absolute;top:0;left:0;width:1px;height:14px;pointer-events:none';
+      document.body.prepend(sentinel);
+      new IntersectionObserver(function (entries) {
+        nav.classList.toggle('is-stuck', !entries[0].isIntersecting);
+      }, { threshold: 0 }).observe(sentinel);
+    } else {
       nav.classList.toggle('is-stuck', window.scrollY > 12);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('scroll', function () {
+        nav.classList.toggle('is-stuck', window.scrollY > 12);
+      }, { passive: true });
+    }
   }
 
   var toggle = $('.nav__toggle');
@@ -160,16 +174,20 @@
   };
 
   if ('IntersectionObserver' in window) {
+    // stagger lives in CSS via --i, so no timer competes with the canvas rAF
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry, i) {
+      entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
-        var el = entry.target;
-        window.setTimeout(function () { el.classList.add('is-in'); }, i * 60);
-        io.unobserve(el);
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
 
-    revealables.forEach(function (el) { io.observe(el); });
+    revealables.forEach(function (el, i) {
+      // index within its own group, so a long section doesn't stagger forever
+      if (!el.style.getPropertyValue('--i')) el.style.setProperty('--i', String(i % 4));
+      io.observe(el);
+    });
     // safety net: never leave content invisible if the observer misbehaves
     window.setTimeout(revealAll, 4000);
   } else {
