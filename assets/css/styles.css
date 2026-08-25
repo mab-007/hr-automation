@@ -14,8 +14,12 @@
   --line:          rgba(255, 255, 255, 0.09);
   --line-strong:   rgba(255, 255, 255, 0.16);
   --fg:            #f6f6f8;
+  /* Alphas are pinned to measured contrast against the darkest surface (--bg):
+     0.64 -> 7.7:1, 0.52 -> 5.3:1. --fg-dim was 0.42, which is 3.78:1 and fails
+     the 4.5:1 body-text bar — Lighthouse caught it on footnotes and inactive
+     tabs. Don't lower these without re-measuring. */
   --fg-muted:      rgba(246, 246, 248, 0.64);
-  --fg-dim:        rgba(246, 246, 248, 0.42);
+  --fg-dim:        rgba(246, 246, 248, 0.52);
   --accent:        #17b877;
   --accent-warm:   #ff6a2b;
   --accent-blue:   #4d7bff;
@@ -461,6 +465,10 @@ table { border-collapse: collapse; width: 100%; }
    names are invisible to visitors. Renaming them would touch ~250 lines of
    working CSS for zero user-visible gain, so don't. */
 .app {
+  /* min-width:0 is load-bearing: the 5-column table inside won't shrink below
+     its min-content width, and without this it pushes the grid track wider than
+     the viewport (16px of overflow at 390px). */
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: linear-gradient(180deg, #101015, #0a0a0d);
@@ -641,7 +649,7 @@ table { border-collapse: collapse; width: 100%; }
 /* approve panel */
 /* align-content:start — the panel has a min-height, and a stretched auto row
    would blow the status chips up into ellipses */
-.approve { display: grid; gap: 16px; align-content: start; }
+.approve { display: grid; gap: 16px; align-content: start; min-width: 0; }
 .approve__summary {
   display: grid; gap: 10px;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -668,7 +676,10 @@ table { border-collapse: collapse; width: 100%; }
 }
 
 /* pay panel */
-.payrun { display: grid; gap: 16px; align-content: start; }
+.payrun { display: grid; gap: 16px; align-content: start; min-width: 0; }
+/* the table scrolls inside the mockup rather than widening it */
+.payrun__scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.payrun__scroll > table { min-width: 460px; }
 .payrun__head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
 .payrun__head b { display: block; font-size: 0.9375rem; font-weight: 500; }
 .payrun__head span { font-size: 0.75rem; color: var(--fg-dim); }

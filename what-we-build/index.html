@@ -19,7 +19,12 @@
 <meta name="twitter:image" content="https://www.wheelz365.com/assets/og-cover.png" />
 
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
-<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=general-sans@400,500,600,700&display=swap" />
+<!-- Loaded non-blocking: as a plain stylesheet this cost ~2.1s of render-blocking
+     time. media="print" lets the parser skip it, then onload promotes it. The
+     system stack in --font carries the first paint. -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=general-sans@400,500,600,700&display=swap"
+      media="print" onload="this.media='all';this.onload=null" />
+<noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=general-sans@400,500,600,700&display=swap" /></noscript>
 <link rel="stylesheet" href="../assets/css/styles.css" />
 </head>
 <body>
