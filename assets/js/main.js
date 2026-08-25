@@ -1,17 +1,12 @@
 /* ==========================================================================
-   main.js — nav, tabs, accordion, stats carousel, reveals, early-access form.
+   main.js — shared by all four pages:
+     /  ·  /what-we-build/  ·  /security/  ·  /audit/
+
+   Every block guards for a missing element, because no page has all of them.
    ========================================================================== */
 (function () {
   'use strict';
 
-  /* --------------------------------------------------------------------
-     WHERE EARLY-ACCESS SIGNUPS GO
-     GitHub Pages is static, so it cannot receive a form post by itself.
-     Paste a Formspree / Getform / Google Apps Script endpoint below and the
-     form will POST to it. Leave it empty and the form falls back to opening
-     the visitor's mail client addressed to CONTACT_EMAIL.
-     -------------------------------------------------------------------- */
-  var FORM_ENDPOINT = '';
   var CONTACT_EMAIL = 'hello@wheelz365.com';
 
   var $  = function (sel, root) { return (root || document).querySelector(sel); };
@@ -21,11 +16,13 @@
 
   /* ------------------------------ nav ------------------------------ */
   var nav = $('#nav');
-  var onScroll = function () {
-    nav.classList.toggle('is-stuck', window.scrollY > 12);
-  };
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+  if (nav) {
+    var onScroll = function () {
+      nav.classList.toggle('is-stuck', window.scrollY > 12);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
 
   var toggle = $('.nav__toggle');
   var mobileMenu = $('#mobile-menu');
@@ -43,24 +40,48 @@
     });
   }
 
-  /* ------------------------------ tabs ------------------------------ */
+  /* ------------------------------ legacy anchors ------------------------------
+     The old single-page site linked to #early-access, #how, #why and friends,
+     and those URLs are out in the world. GitHub Pages is static so it cannot
+     301 them; remapping the hash on load is the next best thing.
+     -------------------------------------------------------------------------- */
+  var LEGACY_ANCHORS = {
+    '#early-access': '#audit-cta',
+    '#proof':        '#audit-cta',
+    '#how':          '#how-we-work',
+    '#why':          '#problem',
+    '#integrations': '#security',
+    '#compare':      '#faq',
+    '#team':         '#ownership'
+  };
+
+  (function remapLegacyAnchor() {
+    var target = LEGACY_ANCHORS[window.location.hash];
+    if (!target) return;
+    var el = $(target);
+    if (!el) return;
+    // replaceState so the back button doesn't bounce between the two hashes
+    window.history.replaceState(null, '', target);
+    el.scrollIntoView({ block: 'start' });
+  })();
+
+  /* ------------------------------ tabs ------------------------------
+     No auto-advance: a panel that rotates away mid-sentence is worse than no
+     motion at all. User-driven only.
+     ------------------------------------------------------------------ */
   var TAB_TITLES = {
-    connect:  'Import your people data, plug in attendance and<br class="br-lg"> your bank — in an afternoon.',
-    automate: 'From a signed offer letter to salary in the bank,<br class="br-lg"> Wheelz365 runs the cycle for you.',
-    approve:  'Only the exceptions reach you. Everything else<br class="br-lg"> is already reconciled.',
-    pay:      'One click releases salaries, payslips, statutory<br class="br-lg"> challans and the journal entry.'
+    audit:  'We map where the hours actually go, and hand you<br class="br-lg"> the shortlist either way.',
+    design: 'Two or three automations, the metrics in writing,<br class="br-lg"> and the data boundary settled.',
+    build:  'Built in your environment, on your real data —<br class="br-lg"> working software every week.',
+    run:    'We host it, you host it, or you own it outright.<br class="br-lg"> Change your mind whenever.'
   };
 
   var tabs = $$('.tab');
   var panels = $$('.panel');
   var howTitle = $('#how-title');
-  var pauseBtn = $('#tab-pause');
   var current = 0;
-  var timer = 0;
-  var playing = true;
-  var CYCLE = 7000;
 
-  function showTab(index, viaUser) {
+  function showTab(index) {
     current = (index + tabs.length) % tabs.length;
 
     tabs.forEach(function (tab, i) {
@@ -77,65 +98,35 @@
 
     var key = tabs[current].dataset.tab;
     if (howTitle && TAB_TITLES[key]) howTitle.innerHTML = TAB_TITLES[key];
-    if (viaUser) restartCycle();
-  }
-
-  function restartCycle() {
-    window.clearInterval(timer);
-    if (!playing) return;
-    timer = window.setInterval(function () { showTab(current + 1); }, CYCLE);
   }
 
   if (tabs.length) {
-    // keep the heading in sync with the active tab; ?tab=pay deep-links a step
+    // ?tab=build deep-links a step
     var wanted = (window.location.search.match(/[?&]tab=([a-z]+)/) || [])[1];
     var wantedIndex = 0;
     tabs.forEach(function (tab, i) { if (tab.dataset.tab === wanted) wantedIndex = i; });
     showTab(wantedIndex);
 
     tabs.forEach(function (tab, i) {
-      tab.addEventListener('click', function () { showTab(i, true); });
+      tab.addEventListener('click', function () { showTab(i); });
       tab.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowRight') { showTab(current + 1, true); tabs[current].focus(); }
-        if (e.key === 'ArrowLeft')  { showTab(current - 1, true); tabs[current].focus(); }
+        if (e.key === 'ArrowRight') { showTab(current + 1); tabs[current].focus(); }
+        if (e.key === 'ArrowLeft')  { showTab(current - 1); tabs[current].focus(); }
       });
     });
-
-    if (pauseBtn) {
-      pauseBtn.addEventListener('click', function () {
-        playing = !playing;
-        pauseBtn.classList.toggle('is-playing', playing);
-        pauseBtn.setAttribute('aria-label', playing ? 'Pause auto-advance' : 'Play auto-advance');
-        playing ? restartCycle() : window.clearInterval(timer);
-      });
-    }
-
-    // only auto-advance while the section is actually on screen
-    var howSection = $('#how');
-    if ('IntersectionObserver' in window && howSection) {
-      new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) restartCycle();
-        else window.clearInterval(timer);
-      }, { threshold: 0.25 }).observe(howSection);
-    } else {
-      restartCycle();
-    }
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      playing = false;
-      window.clearInterval(timer);
-      if (pauseBtn) pauseBtn.classList.remove('is-playing');
-    }
   }
 
   /* ------------------------------ accordion ------------------------------ */
   $$('.acc-item').forEach(function (item) {
     var head = $('.acc-item__head', item);
+    if (!head) return;
     head.addEventListener('click', function () {
       var isOpen = item.classList.contains('is-open');
-      $$('.acc-item').forEach(function (other) {
+      var group = item.closest('.accordion') || document;
+      $$('.acc-item', group).forEach(function (other) {
         other.classList.remove('is-open');
-        $('.acc-item__head', other).setAttribute('aria-expanded', 'false');
+        var h = $('.acc-item__head', other);
+        if (h) h.setAttribute('aria-expanded', 'false');
       });
       if (!isOpen) {
         item.classList.add('is-open');
@@ -144,27 +135,27 @@
     });
   });
 
-  /* ------------------------------ stats carousel ------------------------------ */
-  var track = $('#stats-track');
-  if (track) {
-    var scrollByCard = function (dir) {
-      var card = $('.stat-card', track);
-      var amount = card ? card.getBoundingClientRect().width + 18 : 300;
-      track.scrollBy({ left: amount * dir, behavior: 'smooth' });
+  /* ------------------------------ archetype flow swap ------------------------
+     Six trigger→action flows are pre-rendered in the DOM; this only toggles
+     which one is visible. With JS off the first flow shows and every card is
+     still a working link to its section on /what-we-build/.
+     -------------------------------------------------------------------------- */
+  var archCards = $$('[data-flow]');
+  if (archCards.length) {
+    var setFlow = function (key) {
+      archCards.forEach(function (card) {
+        card.setAttribute('aria-pressed', String(card.dataset.flow === key));
+      });
+      $$('[data-flow-panel]').forEach(function (panel) {
+        panel.hidden = panel.dataset.flowPanel !== key;
+      });
     };
-    var prev = $('[data-stats-prev]');
-    var next = $('[data-stats-next]');
-    if (prev) prev.addEventListener('click', function () { scrollByCard(-1); });
-    if (next) next.addEventListener('click', function () { scrollByCard(1); });
 
-    var syncArrows = function () {
-      var max = track.scrollWidth - track.clientWidth - 2;
-      if (prev) prev.disabled = track.scrollLeft <= 2;
-      if (next) next.disabled = track.scrollLeft >= max;
-    };
-    syncArrows();
-    track.addEventListener('scroll', syncArrows, { passive: true });
-    window.addEventListener('resize', syncArrows);
+    archCards.forEach(function (card) {
+      card.addEventListener('click', function () { setFlow(card.dataset.flow); });
+      card.addEventListener('mouseenter', function () { setFlow(card.dataset.flow); });
+      card.addEventListener('focus', function () { setFlow(card.dataset.flow); });
+    });
   }
 
   /* ------------------------------ reveal on scroll ------------------------------ */
@@ -178,7 +169,7 @@
       entries.forEach(function (entry, i) {
         if (!entry.isIntersecting) return;
         var el = entry.target;
-        window.setTimeout(function () { el.classList.add('is-in'); }, i * 70);
+        window.setTimeout(function () { el.classList.add('is-in'); }, i * 60);
         io.unobserve(el);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
@@ -190,63 +181,136 @@
     revealAll();
   }
 
-  /* ------------------------------ early-access form ------------------------------ */
-  var form = $('#early-access-form');
-  var status = $('#form-status');
+  /* ------------------------------ audit form ------------------------------
+     GitHub Pages is static and cannot receive a POST, so submitting hands the
+     visitor's own mail client a pre-filled message. No honeypot and no rate
+     limiting here on purpose: both are server-side concepts and would be pure
+     theatre in front of a mailto: link.
+     ------------------------------------------------------------------------ */
+  var form = $('#audit-form');
 
   if (form) {
+    var status = $('#form-status');
+    var submitBtn = $('button[type="submit"]', form);
+
+    var FREE_EMAIL = [
+      'gmail.com', 'googlemail.com', 'yahoo.com', 'yahoo.co.in', 'hotmail.com',
+      'outlook.com', 'live.com', 'aol.com', 'icloud.com', 'me.com',
+      'proton.me', 'protonmail.com', 'rediffmail.com', 'zoho.com', 'yandex.com'
+    ];
+
+    // mailto: URLs get truncated by some clients well before the spec limit, so
+    // each free-text answer is capped and the visitor is told to paste the rest.
+    var TEXT_CAP = 600;
+
+    var fieldOf = function (control) { return control.closest('.field'); };
+
+    var noteOf = function (control) {
+      var field = fieldOf(control);
+      return field ? $('.field__note', field) : null;
+    };
+
+    var setNote = function (control, message, state) {
+      var field = fieldOf(control);
+      var note = noteOf(control);
+      if (field) field.classList.toggle('has-error', state === 'err');
+      if (!note) return;
+      // a hint written into the HTML is the resting state; remember it once
+      if (note.dataset.hint === undefined) note.dataset.hint = note.textContent;
+      note.textContent = message || note.dataset.hint;
+      note.classList.toggle('is-err', state === 'err');
+      note.classList.toggle('is-warn', state === 'warn');
+    };
+
+    var validate = function (control) {
+      if (control.type === 'hidden' || control.disabled) return true;
+
+      if (!control.checkValidity()) {
+        var msg = control.validity.valueMissing
+          ? 'This one’s required.'
+          : (control.validationMessage || 'Please check this field.');
+        setNote(control, msg, 'err');
+        return false;
+      }
+
+      // A work address gets us to the right conversation faster, but plenty of
+      // real 20-person firms run on Gmail — so this warns, it doesn't block.
+      if (control.type === 'email' && control.value) {
+        var domain = control.value.split('@')[1];
+        if (domain && FREE_EMAIL.indexOf(domain.toLowerCase()) !== -1) {
+          setNote(control, 'A work address helps us prepare — but this is fine too.', 'warn');
+          return true;
+        }
+      }
+
+      setNote(control, '', null);
+      return true;
+    };
+
+    var controls = $$('input, select, textarea', form);
+    controls.forEach(function (control) {
+      control.addEventListener('blur', function () { validate(control); });
+      control.addEventListener('change', function () { validate(control); });
+    });
+
+    var say = function (msg, state) {
+      if (!status) return;
+      status.textContent = msg;
+      status.classList.toggle('is-ok', state === 'ok');
+      status.classList.toggle('is-err', state === 'err');
+    };
+
+    var labelFor = function (control) {
+      var field = fieldOf(control);
+      var label = field ? $('.field__label', field) : null;
+      if (!label) return control.name.replace(/_/g, ' ');
+      return label.textContent.replace(/\s*\*\s*$/, '').trim();
+    };
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
-
-      var data = new FormData(form);
-      var submit = $('button[type="submit"]', form);
-
-      var say = function (msg, state) {
-        status.textContent = msg;
-        status.classList.toggle('is-ok', state === 'ok');
-        status.classList.toggle('is-err', state === 'err');
-      };
-
-      var succeed = function () {
-        form.reset();
-        submit.disabled = false;
-        submit.textContent = 'Get Early Access';
-        say('Thanks — we’ll be in touch about early access shortly.', 'ok');
-      };
-
-      if (FORM_ENDPOINT) {
-        submit.disabled = true;
-        submit.textContent = 'Sending…';
-        fetch(FORM_ENDPOINT, {
-          method: 'POST',
-          body: data,
-          headers: { Accept: 'application/json' }
-        }).then(function (res) {
-          if (!res.ok) throw new Error('bad status');
-          succeed();
-        }).catch(function () {
-          submit.disabled = false;
-          submit.textContent = 'Get Early Access';
-          say('Something went wrong. Email us at ' + CONTACT_EMAIL + ' instead.', 'err');
-        });
-        return;
-      }
-
-      // no endpoint configured — hand off to the visitor's mail client
-      var lines = [];
-      data.forEach(function (value, key) {
-        if (value) lines.push(key.replace(/_/g, ' ') + ': ' + value);
+      var firstBad = null;
+      controls.forEach(function (control) {
+        if (!validate(control) && !firstBad) firstBad = control;
       });
+
+      if (firstBad) {
+        firstBad.focus();
+        say('A couple of fields need a look before this can go.', 'err');
+        return;
+      }
+
+      var lines = [];
+      var truncated = false;
+
+      controls.forEach(function (control) {
+        var value = (control.value || '').trim();
+        if (!value) return;
+        if (value.length > TEXT_CAP) {
+          value = value.slice(0, TEXT_CAP) + '…';
+          truncated = true;
+        }
+        lines.push(labelFor(control) + ':\n' + value);
+      });
+
+      if (truncated) {
+        lines.push('[One or more answers were shortened to fit the email — ' +
+                   'please paste the full text before sending.]');
+      }
+
+      var company = ($('[name="company"]', form) || {}).value || '';
+      var subject = 'Pain-point audit request' + (company ? ' — ' + company.trim() : '');
+
       var href = 'mailto:' + CONTACT_EMAIL +
-        '?subject=' + encodeURIComponent('Wheelz365 early access request') +
-        '&body=' + encodeURIComponent(lines.join('\n'));
+        '?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(lines.join('\n\n'));
+
       window.location.href = href;
-      say('Opening your email app — send the message and we’ll take it from there.', 'ok');
+
+      if (submitBtn) submitBtn.textContent = 'Opening your email…';
+      say('Your email app should be opening with this filled in — send it and we’ll ' +
+          'reply within one working day. If nothing opened, email ' + CONTACT_EMAIL + ' directly.', 'ok');
     });
   }
 
