@@ -1189,7 +1189,7 @@ table { border-collapse: collapse; width: 100%; }
 
 /* ------------------------------ mono log -------------------------------- */
 .mono-log {
-  margin-top: 22px;
+  margin: 22px 0 0;   /* it's a <pre>, so kill the UA margin explicitly */
   font-family: var(--font-mono);
   font-size: 0.75rem;
   line-height: 1.75;
