@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>What we build — Wheelz365</title>
+<meta name="description" content="Six automation patterns cover most of what professional-services firms ask us to build: research, document generation, screening, scheduling, back-office and client reporting — plus AI hiring automation for consulting firms." />
+<meta name="theme-color" content="#050506" />
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+<link rel="canonical" href="https://www.wheelz365.com/what-we-build/" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.wheelz365.com/what-we-build/" />
+<meta property="og:site_name" content="Wheelz365" />
+<meta property="og:title" content="What we build — Wheelz365" />
+<meta property="og:description" content="Six patterns cover most of what we're asked to build. For each: the manual reality, the mechanism, what gets measured, and where the human stays." />
+<meta property="og:image" content="https://www.wheelz365.com/assets/og-cover.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://www.wheelz365.com/assets/og-cover.png" />
+
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=general-sans@400,500,600,700&display=swap" />
+<link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#top">Skip to content</a>
+
+<!-- ============================== NAV ============================== -->
+<header class="nav" id="nav">
+  <div class="container container--wide nav__inner">
+    <a class="brand" href="../" aria-label="Wheelz365 home">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">Wheelz<span class="brand__name-accent">365</span></span>
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      <a href="./" aria-current="page">What we build</a>
+      <a href="../#how-we-work">How we work</a>
+      <a href="../security/">Security</a>
+      <a href="../#who">Who we work with</a>
+    </nav>
+
+    <div class="nav__actions">
+      <a class="btn btn--light btn--sm" href="../audit/">
+        Book an audit <span class="btn__dot" aria-hidden="true">→</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav__mobile" id="mobile-menu" hidden>
+    <a href="./">What we build</a>
+    <a href="../#how-we-work">How we work</a>
+    <a href="../security/">Security</a>
+    <a href="../#who">Who we work with</a>
+    <a class="btn btn--light btn--block" href="../audit/">Book an audit</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============================== HEADER ============================== -->
+<section class="page-head">
+  <div class="container page-head__inner">
+    <span class="pill pill--eyebrow">What we build</span>
+    <h1>The work that eats your team's week.</h1>
+    <p>
+      Six patterns cover most of what we're asked to build. Yours is probably a variation
+      of one of them. For each one: what your team does by hand today, what we build
+      instead, what we measure, and which decisions we deliberately leave with a person.
+    </p>
+  </div>
+</section>
+
+<!-- ============================== ARCHETYPES ============================== -->
+<div class="container">
+
+  <!-- ---------- 1. Research ---------- -->
+  <section class="deep" id="research">
+    <div class="deep__head">
+      <span class="pill pill--eyebrow">01 · Research &amp; data collection</span>
+      <h2>Your analysts are a very expensive copy-paste layer.</h2>
+      <p>Market data, company profiles, filings, pricing, hiring signals — gathered,
+        verified and structured, with a citation on every line.</p>
+    </div>
+
+    <div class="blocks">
+      <div class="block">
+        <h3>The manual reality</h3>
+        <p>An analyst gets a list of 200 target companies on Monday. By Wednesday they've
+          done sixty: opening each website, hunting for headcount, checking a filing,
+          pasting it into a spreadsheet, then doing it again. The work needs no judgement
+          and takes two days. On Thursday the list changes.</p>
+      </div>
+      <div class="block">
+        <h3>What we build</h3>
+        <p>An agent that works the list: pulls from the sources you already trust,
+          cross-checks each figure against a second source, and writes the result into
+          your own schema. Where it can't verify something it says so instead of guessing —
+          which is the difference between a research tool and a liability.</p>
+      </div>
+      <div class="block">
+        <h3>What gets measured</h3>
+        <ul>
+          <li>Analyst hours per profile, before and after</li>
+          <li>Turnaround from request to delivered list</li>
+          <li>Error rate found in spot-checks</li>
+          <li>Share of fields verified against two sources</li>
+        </ul>
+      </div>
+      <div class="block block--human">
+        <h3>Where the human stays</h3>
+        <p>The analyst still owns the conclusion. Nothing goes to a client or into a
+          model's recommendation without a person reading it, and anything the agent
+          flagged as unverified is surfaced at the top rather than buried.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- 2. Documents ---------- -->
+  <section class="deep" id="documents">
+    <div class="deep__head">
+      <span class="pill pill--eyebrow">02 · Document &amp; report generation</span>
+      <h2>The deliverable you produce for the fortieth time.</h2>
+      <p>Reports, decks, memos, proposals and SOWs, drafted in your firm's structure and
+        voice from your own data.</p>
+    </div>
+
+    <div class="blocks">
+      <div class="block">
+        <h3>The manual reality</h3>
+        <p>Every proposal starts as last quarter's proposal. Someone opens the most recent
+          one, strips the client name, rewrites four sections, forgets to update a figure
+          in the appendix, and a partner catches it at 11pm. The structure never changes;
+          only the content does.</p>
+      </div>
+      <div class="block">
+        <h3>What we build</h3>
+        <p>A generator that reads your own template library and data, assembles the first
+          draft in the right structure, and pulls live figures from the system of record
+          instead of the last document. Your voice, because it's trained on your
+          deliverables and not on the internet's idea of a consulting report.</p>
+      </div>
+      <div class="block">
+        <h3>What gets measured</h3>
+        <ul>
+          <li>Hours from brief to reviewable first draft</li>
+          <li>Number of revision rounds before sign-off</li>
+          <li>Factual corrections caught in review</li>
+          <li>Proposals out per week, per person</li>
+        </ul>
+      </div>
+      <div class="block block--human">
+        <h3>Where the human stays</h3>
+        <p>It produces a draft, never a send. The recommendation, the pricing and the
+          commitment are written or confirmed by the person whose name is on the document.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- 3. Screening ---------- -->
+  <section class="deep" id="screening">
+    <div class="deep__head">
+      <span class="pill pill--eyebrow">03 · Screening &amp; triage</span>
+      <h2>Four hundred applications and one afternoon.</h2>
+      <p>High-volume inbound scored against your criteria and ranked, with a written
+        rationale behind every position.</p>
+    </div>
+
+    <div class="blocks">
+      <div class="block">
+        <h3>The manual reality</h3>
+        <p>Résumés, RFPs, leads, tickets, invoices, claims — it doesn't matter which. The
+          volume arrives faster than anyone can read it, so the first sixty get real
+          attention and the rest get thirty seconds each. Nobody can tell you why number
+          two hundred was rejected, because nobody really read it.</p>
+      </div>
+      <div class="block">
+        <h3>What we build</h3>
+        <p>Scoring against <em>your</em> rubric, not a generic one, with a written
+          justification per item that a person can disagree with. Everything arrives
+          ranked, with the reasoning attached and the borderline cases pushed to the top
+          of the queue rather than the bottom.</p>
+      </div>
+      <div class="block">
+        <h3>What gets measured</h3>
+        <ul>
+          <li>Hours per hundred items screened</li>
+          <li>Time from arrival to decision</li>
+          <li>Agreement rate between the score and the reviewer</li>
+          <li>Share of the pile that got a real read (target: all of it)</li>
+        </ul>
+      </div>
+      <div class="block block--human">
+        <h3>Where the human stays</h3>
+        <p>Every rejection. The system ranks and explains; a person decides. This isn't a
+          courtesy — an automated rejection you can't justify is a legal exposure, and a
+          consulting firm's brand is on every candidate experience.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- 4. Scheduling ---------- -->
+  <section class="deep" id="scheduling">
+    <div class="deep__head">
+      <span class="pill pill--eyebrow">04 · Scheduling &amp; coordination</span>
+      <h2>Eleven emails to book one meeting.</h2>
+      <p>The back-and-forth that quietly consumes a coordinator's entire day.</p>
+    </div>
+
+    <div class="blocks">
+      <div class="block">
+        <h3>The manual reality</h3>
+        <p>Three partners, two time zones, one candidate, and a coordinator with six
+          calendars open. Offer three slots, two get taken by client work, start again.
+          Then someone reschedules on the morning and the whole sequence repeats. This is
+          the single most complained-about job in most firms.</p>
+      </div>
+      <div class="block">
+        <h3>What we build</h3>
+        <p>An agent that holds the constraints — seniority, panel composition, time zones,
+          buffer rules, who must not be double-booked — finds the overlap, offers it,
+          books it, and sends the brief. When someone drops out it re-solves rather than
+          escalating to a human.</p>
+      </div>
+      <div class="block">
+        <h3>What gets measured</h3>
+        <ul>
+          <li>Turnaround from "ready to schedule" to booked</li>
+          <li>Coordinator hours per interview or meeting</li>
+          <li>Reschedules handled without human touch</li>
+          <li>Drop-off caused by scheduling delay</li>
+        </ul>
+      </div>
+      <div class="block block--human">
+        <h3>Where the human stays</h3>
+        <p>Who sits on the panel, and any exception that affects a client commitment. The
+          agent never moves a client meeting to solve an internal one.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- 5. Back office ---------- -->
+  <section class="deep" id="back-office">
+    <div class="deep__head">
+      <span class="pill pill--eyebrow">05 · Back-office operations</span>
+      <h2>The month-end work nobody wants to own.</h2>
+      <p>Invoice and expense processing, timesheet chasing, vendor onboarding, compliance
+        checklists, reconciliation.</p>
+    </div>
+
+    <div class="blocks">
+      <div class="block">
+        <h3>The manual reality</h3>
+        <p>It lands on whoever is least able to say no. Invoices get keyed in twice,
+          timesheets get chased by Slack message, and the compliance checklist is a
+          spreadsheet somebody remembers to open. None of it is anyone's actual job, which
+          is exactly why it slips.</p>
+      </div>
+      <div class="block">
+        <h3>What we build</h3>
+        <p>Extraction and matching against your PO and project structure, coding to the
+          right cost centre, and a queue that surfaces only the exceptions. Chasing
+          happens on a schedule without anyone feeling like the person who nags.</p>
+      </div>
+      <div class="block">
+        <h3>What gets measured</h3>
+        <ul>
+          <li>Days to close the month</li>
+          <li>Cost per invoice or expense processed</li>
+          <li>Exception rate, and how many need a human</li>
+          <li>Timesheet compliance by the deadline</li>
+        </ul>
+      </div>
+      <div class="block block--human">
+        <h3>Where the human stays</h3>
+        <p>Anything that moves money or creates an obligation. Payment, write-off and
+          vendor approval stay a person's decision, with the full trail attached so the
+          decision takes seconds instead of an investigation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- 6. Reporting ---------- -->
+  <section class="deep" id="reporting">
+    <div class="deep__head">
+      <span class="pill pill--eyebrow">06 · Client-facing reporting</span>
+      <h2>The same report, every Monday, forever.</h2>
+      <p>Recurring reports and dashboards assembled from your systems on a schedule, in
+        your template, ready for a partner's review.</p>
+    </div>
+
+    <div class="blocks">
+      <div class="block">
+        <h3>The manual reality</h3>
+        <p>Someone spends Friday afternoon, or Monday morning, pulling the same numbers
+          out of the same four systems into the same deck. It is the most reliably
+          repeated task in the firm and the least defensible use of a senior person's
+          time — and if they're on leave, the client notices.</p>
+      </div>
+      <div class="block">
+        <h3>What we build</h3>
+        <p>A scheduled assembly from your systems of record into the client's template,
+          with the movements since last period called out rather than left for the reader
+          to spot. It lands before the stand-up, in draft, every time — including when the
+          person who usually builds it is away.</p>
+      </div>
+      <div class="block">
+        <h3>What gets measured</h3>
+        <ul>
+          <li>Hours per report cycle</li>
+          <li>On-time delivery rate</li>
+          <li>Corrections raised by the client</li>
+          <li>Reports a single person can carry</li>
+        </ul>
+      </div>
+      <div class="block block--human">
+        <h3>Where the human stays</h3>
+        <p>The commentary and the send. A partner reads it and decides what the numbers
+          mean before a client ever sees them.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================== FEATURED: HIRING ============================== -->
+<section class="section section--band" id="hiring">
+  <div class="container">
+    <div class="eyebrow-wrap eyebrow-wrap--left reveal"><span class="pill pill--eyebrow">Featured use case</span></div>
+    <h2 class="section__title section__title--left reveal">AI hiring automation, worked all the way through.</h2>
+    <p class="section__sub section__sub--left reveal">
+      Hiring is where several of the patterns above land at once, so it's the example we
+      can be most concrete about. This is one use case, not our whole business — the same
+      four workflows have equivalents in every function that runs on people's hours.
+    </p>
+
+    <div class="blocks reveal">
+      <div class="block">
+        <h3>Résumé screening with competency scoring</h3>
+        <p>Scored against your own consulting rubric — structured reasoning, domain depth,
+          communication — with a written justification per candidate. The output is a
+          ranked shortlist a hiring partner can argue with, which is the only kind worth
+          having.</p>
+      </div>
+      <div class="block">
+        <h3>Interview scheduling across partner calendars</h3>
+        <p>The highest-frustration, lowest-risk, most visible win in the whole function.
+          Panel composition, seniority rules, time zones and buffers held as constraints,
+          re-solved automatically when someone drops.</p>
+      </div>
+      <div class="block">
+        <h3>JD and role-kit generation</h3>
+        <p>A hiring manager's five-line brief becomes a job description, screening
+          questions, a scoring rubric and outreach copy — in your firm's voice, ready to
+          edit rather than ready to send.</p>
+      </div>
+      <div class="block">
+        <h3>Hiring-funnel reporting</h3>
+        <p>Assembled from the ATS on a schedule: stage conversion, time-to-shortlist,
+          offer-to-join drop-off, agency spend. The numbers that tell you whether any of
+          the above is working.</p>
+      </div>
+    </div>
+
+    <div class="callout reveal">
+      <span class="callout__mark" aria-hidden="true">✓</span>
+      <div>
+        <b>A human approves every rejection. Without exception.</b>
+        <p>The system scores, ranks and explains. It never sends a rejection, and it never
+          makes an offer. This is both the ethical line and the practical one: an
+          automated rejection you cannot justify in writing is a legal exposure, and in a
+          firm that hires from a small number of campuses, every candidate experience is
+          your brand. Candidate PII stays inside your tenancy throughout —
+          <a class="link-accent" href="../security/">the architecture is here</a>.</p>
+      </div>
+    </div>
+
+    <div class="flow reveal" aria-hidden="true">
+      <div class="flow__inner">
+        <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Application lands in the ATS</span><span class="flow__dots">···</span></div>
+        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Score against your competency rubric</span><span class="flow__dots">···</span></div>
+        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Write the rationale, cite the evidence</span><span class="flow__dots">···</span></div>
+        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Rank into a shortlist, borderline cases first</span><span class="flow__dots">···</span></div>
+        <div class="flow__card flow__card--hero">
+          <span class="kbd kbd--trigger">Gate</span>
+          <span>A recruiter reviews and decides. Progressions get scheduled automatically; rejections wait for a person, always.</span>
+          <span class="flow__zap">⚡</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== DELIVERY COMPARISON ============================== -->
+<section class="section" id="delivery-modes">
+  <div class="container">
+    <div class="eyebrow-wrap eyebrow-wrap--left reveal"><span class="pill pill--eyebrow">Delivery</span></div>
+    <h2 class="section__title section__title--left reveal">However we build it, you choose how you hold it.</h2>
+    <p class="section__sub section__sub--left reveal">
+      The same system, four ways to own it. You can start in one column and move to
+      another later — switching is not a renegotiation.
+    </p>
+
+    <div class="compare-table reveal">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col"><span class="sr-only">Aspect</span></th>
+            <th scope="col">Hosted API</th>
+            <th scope="col">Embedded in your environment</th>
+            <th scope="col">Buy the source code</th>
+            <th scope="col">Buy the code, keep the team</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Who hosts it</th>
+            <td>We do</td>
+            <td>You do</td>
+            <td>You do</td>
+            <td>You do</td>
+          </tr>
+          <tr>
+            <th scope="row">Where your data lives</th>
+            <td>Our infrastructure, region-pinned</td>
+            <td>Inside your cloud or VPC, never leaves</td>
+            <td>Wherever you deploy it</td>
+            <td>Wherever you deploy it</td>
+          </tr>
+          <tr>
+            <th scope="row">Who can modify it</th>
+            <td>Us</td>
+            <td>Us, with your access</td>
+            <td>You, or anyone you hire</td>
+            <td>You and us, together</td>
+          </tr>
+          <tr>
+            <th scope="row">What you own</th>
+            <td>The outputs and your data</td>
+            <td>The outputs, your data, the deployment</td>
+            <td>Full IP in the source, documented</td>
+            <td>Full IP, plus the people who wrote it</td>
+          </tr>
+          <tr>
+            <th scope="row">Ongoing cost shape</th>
+            <td>Usage-based, capped monthly</td>
+            <td>Your infra cost plus your model usage</td>
+            <td>Your infra and model usage only</td>
+            <td>The above, plus a separate service line</td>
+          </tr>
+          <tr>
+            <th scope="row">How you exit</th>
+            <td>Stop calling the API</td>
+            <td>Buy the code, or switch it off</td>
+            <td>Nothing to exit — it's yours</td>
+            <td>Cancel the service, keep the code</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-hint">Scroll the table sideways to compare all four modes.</p>
+  </div>
+</section>
+
+<!-- ============================== CTA ============================== -->
+<section class="section section--cta" id="audit-cta">
+  <div class="container">
+    <h2 class="section__title reveal">Which of these is your Tuesday?</h2>
+    <p class="section__sub reveal">
+      That's the audit. Forty-five minutes with your team, then a written shortlist of
+      what's worth automating in your firm — ranked by hours saved against effort to
+      build. You keep it either way.
+    </p>
+    <div class="section__cta reveal">
+      <a class="btn btn--light btn--lg" href="../audit/">
+        Book a pain-point audit <span class="btn__dot" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <a class="brand" href="../" aria-label="Wheelz365 home">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__name">Wheelz<span class="brand__name-accent">365</span></span>
+      </a>
+      <p>The AI engineering team for firms that don't have one. We design it, build it in
+        six weeks, and run it inside your security boundary.</p>
+      <div class="footer__social">
+        <!-- TODO before launch: real LinkedIn company URL -->
+        <a href="mailto:hello@wheelz365.com" aria-label="Email us"><span aria-hidden="true">@</span></a>
+      </div>
+    </div>
+
+    <nav class="footer__col" aria-label="What we do">
+      <p class="footer__h">What we do</p>
+      <a href="./">What we build</a>
+      <a href="#hiring">HR &amp; hiring automation</a>
+      <a href="../#how-we-work">How we work</a>
+      <a href="../#delivery">Delivery modes</a>
+    </nav>
+
+    <nav class="footer__col" aria-label="Trust">
+      <p class="footer__h">Trust</p>
+      <a href="../security/">Security &amp; data ownership</a>
+      <a href="../#ownership">Buy the code. Keep the team.</a>
+      <a href="../#engagements">How engagements are structured</a>
+      <a href="../#faq">Questions</a>
+    </nav>
+
+    <nav class="footer__col" aria-label="Get started">
+      <p class="footer__h">Get started</p>
+      <a href="../audit/">Book an audit</a>
+      <a href="../#who">Who we work with</a>
+      <a href="mailto:hello@wheelz365.com">hello@wheelz365.com</a>
+    </nav>
+  </div>
+
+  <div class="container footer__base">
+    <p>© <span id="year">2026</span> Wheelz365. All rights reserved.</p>
+    <!-- TODO before launch: registered entity name + city -->
+    <p>hello@wheelz365.com</p>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>
