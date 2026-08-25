@@ -303,7 +303,15 @@
 
       window.location.href = href;
 
-      if (submitBtn) submitBtn.textContent = 'Opening your email…';
+      if (submitBtn) {
+        // remember the original markup — textContent would eat the arrow
+        if (submitBtn.dataset.label === undefined) submitBtn.dataset.label = submitBtn.innerHTML;
+        submitBtn.textContent = 'Opening your email…';
+        // put the button back so a second attempt is possible: if the handoff
+        // silently failed, a permanently spinning button reads as broken
+        window.setTimeout(function () { submitBtn.innerHTML = submitBtn.dataset.label; }, 4000);
+      }
+
       say('Your email app should be opening with this filled in — send it and we’ll ' +
           'reply within one working day. If nothing opened, email ' + CONTACT_EMAIL + ' directly.', 'ok');
     });
