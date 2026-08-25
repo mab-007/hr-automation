@@ -68,17 +68,12 @@
   /* ------------------------------ tabs ------------------------------
      No auto-advance: a panel that rotates away mid-sentence is worse than no
      motion at all. User-driven only.
-     ------------------------------------------------------------------ */
-  var TAB_TITLES = {
-    audit:  'We map where the hours actually go, and hand you<br class="br-lg"> the shortlist either way.',
-    design: 'Two or three automations, the metrics in writing,<br class="br-lg"> and the data boundary settled.',
-    build:  'Built in your environment, on your real data —<br class="br-lg"> working software every week.',
-    run:    'We host it, you host it, or you own it outright.<br class="br-lg"> Change your mind whenever.'
-  };
 
+     The section heading stays put — each panel carries its own copy, so there
+     is nothing to swap out from here.
+     ------------------------------------------------------------------ */
   var tabs = $$('.tab');
   var panels = $$('.panel');
-  var howTitle = $('#how-title');
   var current = 0;
 
   function showTab(index) {
@@ -95,9 +90,6 @@
       panel.classList.toggle('is-active', i === current);
       panel.hidden = i !== current;
     });
-
-    var key = tabs[current].dataset.tab;
-    if (howTitle && TAB_TITLES[key]) howTitle.innerHTML = TAB_TITLES[key];
   }
 
   if (tabs.length) {
@@ -135,24 +127,27 @@
     });
   });
 
-  /* ------------------------------ archetype flow swap ------------------------
+  /* ------------------------------ archetype flow preview ---------------------
      Six trigger→action flows are pre-rendered in the DOM; this only toggles
-     which one is visible. With JS off the first flow shows and every card is
-     still a working link to its section on /what-we-build/.
+     which one is visible as you move across the cards. The cards stay ordinary
+     links to their section on /what-we-build/ — the preview is enhancement, so
+     with JS off the first flow shows and every card still navigates.
      -------------------------------------------------------------------------- */
-  var archCards = $$('[data-flow]');
+  var archCards = $$('.arch[data-flow]');
   if (archCards.length) {
+    var flowPanels = $$('[data-flow-panel]');
+
     var setFlow = function (key) {
       archCards.forEach(function (card) {
-        card.setAttribute('aria-pressed', String(card.dataset.flow === key));
+        card.classList.toggle('is-current', card.dataset.flow === key);
       });
-      $$('[data-flow-panel]').forEach(function (panel) {
+      flowPanels.forEach(function (panel) {
         panel.hidden = panel.dataset.flowPanel !== key;
       });
     };
 
     archCards.forEach(function (card) {
-      card.addEventListener('click', function () { setFlow(card.dataset.flow); });
+      // hover and keyboard focus only — click is left alone so the link works
       card.addEventListener('mouseenter', function () { setFlow(card.dataset.flow); });
       card.addEventListener('focus', function () { setFlow(card.dataset.flow); });
     });
