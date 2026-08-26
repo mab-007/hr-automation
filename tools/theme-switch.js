@@ -72,9 +72,13 @@
   wrap.querySelector('.tsw__x').addEventListener('click', function () { wrap.remove(); });
 
   function paint() {
-    var cur = root.getAttribute('data-theme') || '';
+    // apply() runs before `wrap` is built, so this must tolerate not existing
+    // yet. Without the guard it threw a TypeError that killed the whole script
+    // AFTER the theme had been set — so ?theme=x appeared to work while the
+    // picker silently never rendered.
+    if (!wrap) return;
     Array.prototype.forEach.call(wrap.querySelectorAll('.tsw__b'), function (b) {
-      b.setAttribute('aria-pressed', String(b.dataset.theme === cur));
+      b.setAttribute('aria-pressed', String(b.dataset.theme === (root.getAttribute('data-theme') || '')));
     });
   }
 
