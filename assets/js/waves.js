@@ -216,16 +216,41 @@
     rafId = window.requestAnimationFrame(frame);
   }
 
+  /* The CSS reads this to decide whether the nav may use backdrop-filter: a blur
+     over an animating backdrop is re-evaluated every single frame, so it is only
+     affordable once this field has stopped moving. */
+  function publish(state) {
+    document.documentElement.dataset.canvas = state;
+  }
+
   function start() {
     if (running || reduceMotion) return;
     running = true;
+    publish('live');
     rafId = window.requestAnimationFrame(frame);
   }
 
   function stop() {
     running = false;
+    publish('idle');
     if (rafId) window.cancelAnimationFrame(rafId);
     rafId = 0;
+  }
+
+  /* Starting the rAF loop during script evaluation puts every early frame inside
+     the window where Total Blocking Time is measured — which is most of why the
+     page scores what it scores. The static first frame is already painted below,
+     so the hero looks finished immediately; the waves simply begin moving once
+     the page is interactive. Nothing is removed to buy this. */
+  function idle(fn) {
+    (window.requestIdleCallback || function (f) { window.setTimeout(f, 200); })(
+      fn, { timeout: 1200 }
+    );
+  }
+
+  function scheduleStart() {
+    if (document.readyState === 'complete') idle(start);
+    else window.addEventListener('load', function () { idle(start); }, { once: true });
   }
 
   function resize() {
@@ -258,16 +283,33 @@
     resizeTimer = window.setTimeout(resize, 160);
   });
 
+  publish(reduceMotion ? 'idle' : 'live');
+
   // don't burn frames when the hero has scrolled away
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
-      entries[0].isIntersecting ? start() : stop();
+      entries[0].isIntersecting ? scheduleStart() : stop();
     }, { threshold: 0 }).observe(canvas);
   } else {
-    start();
+    scheduleStart();
   }
 
   document.addEventListener('visibilitychange', function () {
-    document.hidden ? stop() : start();
+    document.hidden ? stop() : scheduleStart();
   });
+
+  /* The setting was read once at load, so toggling it in the OS did nothing
+     until a reload. Now it takes effect immediately, in both directions. */
+  var mqStill = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var onStillChange = function (e) {
+    reduceMotion = e.matches;
+    if (e.matches) {
+      stop();
+      render(6);          // stop moving, but leave a finished-looking frame
+    } else {
+      scheduleStart();
+    }
+  };
+  if (mqStill.addEventListener) mqStill.addEventListener('change', onStillChange);
+  else if (mqStill.addListener) mqStill.addListener(onStillChange);
 })();

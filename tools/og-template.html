@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>OG card template — not a site page</title>
+<meta name="robots" content="noindex, nofollow" />
+<!--
+  Source for assets/og-cover.png. Kept in the repo so the social card can be
+  regenerated instead of re-designed. Regenerate with:
+
+    python3 -m http.server 4180        # from the repo root
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+      --headless --disable-gpu --hide-scrollbars --force-prefers-reduced-motion \
+      --window-size=1200,630 --screenshot=assets/og-cover.png \
+      "http://localhost:4180/tools/og-template.html"
+
+  --force-prefers-reduced-motion matters: it makes waves.js paint one static
+  frame. Without it the canvas animates forever and the screenshot never lands.
+-->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=general-sans@400,500,600,700&display=swap" />
+<link rel="stylesheet" href="../assets/css/styles.css" />
+<style>
+  /* Renders the social card at exactly 1200x630 using the site's own hero
+     canvas, so the shared link looks like the page it points at.
+     Screenshot with: --window-size=1200,630 */
+  html, body { margin: 0; padding: 0; overflow: hidden; }
+  .og {
+    position: relative;
+    width: 1200px; height: 630px;
+    background: var(--bg);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .og__canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; }
+  /* The waves are brightest across the lower middle, so the copy sits in the
+     top two thirds and the scrim holds that region near-black. Text over the
+     bright crest is unreadable — the same trap as the hero microcopy. */
+  .og__scrim {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      linear-gradient(to bottom,
+        rgba(5,5,6,0.985) 0%, rgba(5,5,6,0.97) 46%,
+        rgba(5,5,6,0.72) 62%, rgba(5,5,6,0.18) 78%, rgba(5,5,6,0) 92%),
+      radial-gradient(88% 70% at 8% 34%, rgba(5,5,6,0.94) 0%, rgba(5,5,6,0) 72%);
+  }
+  .og__inner {
+    position: relative;
+    height: 100%;
+    padding: 60px 72px 56px;
+    display: flex; flex-direction: column;
+  }
+  .og__brand { display: flex; align-items: center; gap: 12px; }
+  .og__brand .brand__mark { width: 30px; height: 30px; }
+  .og__brand-name { font-size: 1.375rem; font-weight: 600; letter-spacing: -0.02em; }
+  .og__brand-name span { color: var(--fg-muted); font-weight: 500; }
+
+  .og__body { margin-top: 58px; }
+  .og__eyebrow {
+    font-size: 0.9375rem; letter-spacing: 0.05em; text-transform: uppercase;
+    color: rgba(246,246,248,0.7);
+  }
+  .og__title {
+    margin-top: 22px;
+    font-size: 4rem; line-height: 1.04; font-weight: 500; letter-spacing: -0.038em;
+    max-width: 21ch;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.85);
+  }
+  .og__foot {
+    margin-top: 30px;
+    display: flex; gap: 26px; flex-wrap: wrap;
+    font-size: 1rem; color: rgba(246,246,248,0.9);
+    text-shadow: 0 1px 4px rgba(0,0,0,1), 0 2px 14px rgba(0,0,0,0.95);
+  }
+  .og__foot span { display: flex; align-items: center; gap: 9px; }
+  .og__foot i {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent-solid);
+    box-shadow: 0 0 9px rgba(124,134,255,0.8);
+  }
+</style>
+</head>
+<body>
+<div class="og">
+  <canvas class="og__canvas" id="wave-canvas"></canvas>
+  <div class="og__scrim"></div>
+  <div class="og__inner">
+    <div class="og__brand">
+      <span class="brand__mark"></span>
+      <span class="og__brand-name">Wheelz<span>365</span></span>
+    </div>
+
+    <div class="og__body">
+      <p class="og__eyebrow">Custom AI automation for professional services</p>
+      <h1 class="og__title">The AI engineering team for firms that don't have one.</h1>
+      <p class="og__foot">
+        <span><i></i>Runs in your cloud</span>
+        <span><i></i>Your data never trains a model</span>
+        <span><i></i>Buy the code, keep the team</span>
+      </p>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/waves.js"></script>
+</body>
+</html>
