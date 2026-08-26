@@ -40,30 +40,40 @@
     </a>
 
     <nav class="nav__links" aria-label="Primary">
-      <a href="./" aria-current="page">What we build</a>
-      <a href="../#how-we-work">How we work</a>
-      <a href="../security/">Security</a>
-      <a href="../#who">Who we work with</a>
+      <a href="./" aria-current="page" style="--i:0">What we build</a>
+      <a href="../#how" style="--i:1">How we work</a>
+      <a href="../#own" style="--i:2">Own the code</a>
+      <a href="../security/" style="--i:3">Security</a>
     </nav>
 
     <div class="nav__actions">
       <a class="btn btn--light btn--sm" href="../audit/">
         Book an audit <span class="btn__dot" aria-hidden="true">→</span>
       </a>
-      <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" id="menu-toggle" aria-controls="menu-overlay">
         <span></span><span></span>
       </button>
     </div>
   </div>
 
-  <div class="nav__mobile" id="mobile-menu" hidden>
-    <a href="./">What we build</a>
-    <a href="../#how-we-work">How we work</a>
-    <a href="../security/">Security</a>
-    <a href="../#who">Who we work with</a>
-    <a class="btn btn--light btn--block" href="../audit/">Book an audit</a>
-  </div>
 </header>
+
+<!-- full-screen menu — the shared handler in main.js binds to #menu-overlay,
+     so a page without it has a hamburger that does nothing -->
+<div class="overlay" id="menu-overlay" hidden>
+  <div class="overlay__inner container">
+    <nav class="overlay__nav" aria-label="Menu">
+      <a href="./" aria-current="page" style="--i:0">What we build</a>
+      <a href="../#how" style="--i:1">How we work</a>
+      <a href="../#own" style="--i:2">Own the code</a>
+      <a href="../security/" style="--i:3">Security</a>
+      <a href="../what-we-build/#hiring" style="--i:4">HR &amp; hiring</a>
+    </nav>
+    <a class="btn btn--light btn--lg overlay__cta" href="../audit/" style="--i:5">
+      Book an audit <span class="btn__dot" aria-hidden="true">→</span>
+    </a>
+  </div>
+</div>
 
 <main id="top">
 
@@ -509,14 +519,14 @@
       <p class="footer__h">What we do</p>
       <a href="./">What we build</a>
       <a href="#hiring">HR &amp; hiring automation</a>
-      <a href="../#how-we-work">How we work</a>
-      <a href="../#delivery">Delivery modes</a>
+      <a href="../#how">How we work</a>
+      <a href="../#own">Delivery modes</a>
     </nav>
 
     <nav class="footer__col" aria-label="Trust">
       <p class="footer__h">Trust</p>
       <a href="../security/">Security &amp; data ownership</a>
-      <a href="../#ownership">Buy the code. Keep the team.</a>
+      <a href="../#own">Buy the code. Keep the team.</a>
       <a href="../#engagements">How engagements are structured</a>
       <a href="../#faq">Questions</a>
     </nav>
@@ -524,7 +534,7 @@
     <nav class="footer__col" aria-label="Get started">
       <p class="footer__h">Get started</p>
       <a href="../audit/">Book an audit</a>
-      <a href="../#who">Who we work with</a>
+      <a href="../#engagements">Who we work with</a>
       <a href="mailto:hello@wheelz365.com">hello@wheelz365.com</a>
     </nav>
   </div>
