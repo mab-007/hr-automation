@@ -315,14 +315,17 @@
     var sel = 0;
 
     function score(item, q) {
-      var hay = (item.label + ' ' + item.hint).toLowerCase();
       if (!q) return 1;
-      if (hay.indexOf(q) === 0) return 3;
-      if (hay.indexOf(q) > -1) return 2;
-      // loose subsequence, so "wwb" finds "What we build"
-      var i = 0;
-      for (var c = 0; c < hay.length && i < q.length; c++) if (hay[c] === q[i]) i++;
-      return i === q.length ? 1 : 0;
+      var label = item.label.toLowerCase();
+      var hay = (item.label + ' ' + item.hint).toLowerCase();
+      if (label.indexOf(q) === 0) return 4;      // label starts with it
+      if (label.indexOf(q) > -1) return 3;       // label contains it
+      if (hay.indexOf(q) > -1) return 2;         // hint contains it
+      // Subsequence is matched against INITIALS only, so "wwb" finds "What we
+      // build" without "sec" also dragging in "HR & hiring automation" — a
+      // subsequence over the whole string matches almost anything.
+      var initials = label.split(/[^a-z0-9]+/).filter(Boolean).map(function (w) { return w[0]; }).join('');
+      return initials.indexOf(q) === 0 ? 1 : 0;
     }
 
     function renderList() {

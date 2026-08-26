@@ -1656,7 +1656,9 @@ table { border-collapse: collapse; width: 100%; }
 .overlay {
   position: fixed; inset: 0; z-index: 80;
   display: grid; align-content: center;
-  background: rgba(4, 4, 6, 0.96);
+  /* fully opaque: at 0.96 the hero headline still ghosted through and competed
+     with the menu type */
+  background: #05050a;
   opacity: 0;
   transition: opacity 0.28s var(--ease-out);
 }
@@ -1664,6 +1666,7 @@ table { border-collapse: collapse; width: 100%; }
 .overlay__inner { display: grid; gap: 40px; }
 .overlay__nav { display: grid; gap: 2px; }
 .overlay__nav a {
+  justify-self: start;   /* so the focus ring hugs the words, not the viewport */
   font-size: clamp(1.75rem, 7vw, 3rem);
   line-height: 1.1;
   font-weight: 500;
@@ -1712,6 +1715,11 @@ table { border-collapse: collapse; width: 100%; }
   position: relative;
   width: 100%; max-width: 540px;
   border-radius: var(--radius-lg);
+  /* a modal has to be legible before it is pretty — the shared .glass fill lets
+     the hero read through it, so this one is nearly opaque */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
+    rgba(11, 11, 14, 0.985);
   box-shadow: var(--lift-3);
   overflow: hidden;
   opacity: 0;
