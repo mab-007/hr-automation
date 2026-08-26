@@ -2070,3 +2070,75 @@ table { border-collapse: collapse; width: 100%; }
     animation-iteration-count: 1 !important;
   }
 }
+
+/* ==========================================================================
+   ARCHETYPE ROW — replaces the 4-cell .blocks grid on /what-we-build/
+   Seven consecutive identical grids with the same four headings was the exact
+   rhythm the home page was rebuilt to escape. Here the substance becomes a
+   two-column row: the claim on the left, the mechanism and the numbers on the
+   right, with the metrics rendered as DATA rather than a bulleted paragraph.
+   ========================================================================== */
+.arch-row { display: grid; gap: 30px; }
+@media (min-width: 940px) {
+  .arch-row { grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+}
+
+.arch-row__lede h2 {
+  margin-top: 14px;
+  font-size: clamp(1.5rem, 2.5vw, 2.125rem);
+  line-height: 1.14; font-weight: 500; letter-spacing: -0.03em;
+  max-width: 18ch;
+}
+/* the one line that has to make them feel seen */
+.arch-row__reality {
+  margin-top: 18px;
+  font-size: clamp(1rem, 1.3vw, 1.0625rem);
+  line-height: 1.6;
+  color: var(--fg-muted);
+  max-width: 44ch;
+  padding-left: 16px;
+  border-left: 2px solid var(--line-strong);
+}
+
+.arch-row__build { color: var(--fg-muted); font-size: 0.9375rem; line-height: 1.65; }
+
+/* metrics as a data strip, not four bullets in a box */
+.metrics {
+  margin-top: 26px;
+  display: grid; gap: 1px;
+  grid-template-columns: 1fr 1fr;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--sheen-top), var(--lift-1);
+  overflow: hidden;
+}
+.metrics li { background: var(--panel); padding: 14px 16px; }
+.metrics b {
+  display: block;
+  font-size: 1.125rem; font-weight: 500; letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.metrics span {
+  display: block; margin-top: 3px;
+  font-size: 0.75rem; color: var(--fg-dim); line-height: 1.4;
+}
+.metrics__note {
+  margin-top: 10px;
+  font-size: 0.75rem; color: var(--fg-dim);
+}
+
+/* the human gate: a line, not a bordered cell */
+.human-note {
+  margin-top: 24px;
+  display: flex; gap: 11px; align-items: flex-start;
+  font-size: 0.9375rem; line-height: 1.6; color: var(--fg-muted);
+}
+.human-note__mark {
+  flex: none; margin-top: 2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(52, 199, 89, 0.14); color: var(--success);
+  font-size: 0.625rem; font-weight: 700;
+}
+.human-note b { color: var(--fg); font-weight: 500; }
