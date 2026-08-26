@@ -2142,3 +2142,7 @@ table { border-collapse: collapse; width: 100%; }
   font-size: 0.625rem; font-weight: 700;
 }
 .human-note b { color: var(--fg); font-weight: 500; }
+
+/* the human gates read as a list of guarantees, not four bordered cells */
+.gates { margin-top: 30px; display: grid; gap: 16px; }
+.gates .human-note { margin-top: 0; }

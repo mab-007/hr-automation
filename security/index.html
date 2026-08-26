@@ -94,14 +94,14 @@
 
   <!-- ---------- Architecture ---------- -->
   <section class="deep" id="architecture">
-    <div class="deep__head">
+    <div class="deep__head reveal">
       <span class="pill pill--eyebrow">01 · Architecture</span>
       <h2>Where the data actually goes.</h2>
       <p>Three zones. The interesting property is what <em>doesn't</em> cross between
         them.</p>
     </div>
 
-    <div class="zones">
+    <div class="zones reveal">
       <div class="zone zone--boundary">
         <p class="zone__eyebrow">Zone 1 · Yours</p>
         <b>Your environment</b>
@@ -135,14 +135,14 @@
 
   <!-- ---------- Where data lives per mode ---------- -->
   <section class="deep" id="per-mode">
-    <div class="deep__head">
+    <div class="deep__head reveal">
       <span class="pill pill--eyebrow">02 · By delivery mode</span>
       <h2>Where your data lives depends on how you buy.</h2>
       <p>The architecture above describes the embedded mode, which is what we recommend
         and what most client-confidential work requires. Here is the honest comparison.</p>
     </div>
 
-    <div class="compare-table" tabindex="0" role="region" aria-label="Where your data lives, by delivery mode">
+    <div class="compare-table reveal" tabindex="0" role="region" aria-label="Where your data lives, by delivery mode">
       <table>
         <thead>
           <tr>
@@ -197,36 +197,29 @@
 
   <!-- ---------- Model providers ---------- -->
   <section class="deep" id="model-providers">
-    <div class="deep__head">
+    <div class="deep__head reveal">
       <span class="pill pill--eyebrow">03 · Model providers</span>
       <h2>The terms we configure, and why they matter.</h2>
     </div>
 
-    <div class="blocks">
-      <div class="block">
-        <h3>Zero retention</h3>
-        <p>Model calls are configured so the provider does not persist request or response
-          content beyond the life of the call. This is a setting we enable per project and
-          verify, not an assumption we inherit from a default.</p>
-      </div>
-      <div class="block">
-        <h3>No training on your data</h3>
-        <p>Your data, and your clients' data, are never used to train or fine-tune a
-          provider's model. Where we fine-tune anything for you, it is your model, in your
-          account, on data you control.</p>
-      </div>
-      <div class="block">
-        <h3>Region pinning</h3>
-        <p>Inference can be pinned to India, the EU or the US, so a data-residency clause
-          in your own client MSA can be satisfied rather than argued about.</p>
-      </div>
-      <div class="block">
-        <h3>Minimum payload</h3>
-        <p>The strongest control is architectural, not contractual: we send the fields a
-          task needs and nothing more. Names, identifiers and salary data get redacted or
-          tokenised before they leave zone 2 wherever the task doesn't need them.</p>
-      </div>
-    </div>
+    <ul class="spec-list reveal">
+      <li>
+        <b>Zero retention</b>
+        <p>Model calls are configured so the provider does not persist request or response content beyond the life of the call. This is a setting we enable per project and verify, not an assumption we inherit from a default.</p>
+      </li>
+      <li>
+        <b>No training on your data</b>
+        <p>Your data, and your clients' data, are never used to train or fine-tune a provider's model. Where we fine-tune anything for you, it is your model, in your account, on data you control.</p>
+      </li>
+      <li>
+        <b>Region pinning</b>
+        <p>Inference can be pinned to India, the EU or the US, so a data-residency clause in your own client MSA can be satisfied rather than argued about.</p>
+      </li>
+      <li>
+        <b>Minimum payload</b>
+        <p>The strongest control is architectural, not contractual: we send the fields a task needs and nothing more. Names, identifiers and salary data get redacted or tokenised before they leave zone 2 wherever the task doesn't need them.</p>
+      </li>
+    </ul>
 
     <p class="footnote">
       Which specific providers a build uses, and in which regions, is agreed in the design
@@ -238,14 +231,14 @@
 
   <!-- ---------- Access controls ---------- -->
   <section class="deep" id="access">
-    <div class="deep__head">
+    <div class="deep__head reveal">
       <span class="pill pill--eyebrow">04 · Access controls</span>
       <h2>The controls we build in.</h2>
       <p>These are engineering decisions taken per engagement, agreed with whoever owns
         security at your firm during the design week.</p>
     </div>
 
-    <div class="slab">
+    <div class="slab reveal">
       <div class="slab__aside">
         <p>Agreed in week one, before any code is written</p>
       </div>
@@ -270,14 +263,14 @@
 
   <!-- ---------- Audit logging ---------- -->
   <section class="deep" id="audit-log">
-    <div class="deep__head">
+    <div class="deep__head reveal">
       <span class="pill pill--eyebrow">05 · Audit logging</span>
       <h2>"What did the AI do, and why?"</h2>
       <p>You will be asked this by your own client. A generic "we log everything" is not
         an answer, so here is the shape of an actual log line.</p>
     </div>
 
-    <pre class="mono-log" tabindex="0" aria-label="Sample audit log excerpt showing timestamped, attributable automated actions with a human approval gate">
+    <pre class="mono-log reveal" tabindex="0" aria-label="Sample audit log excerpt showing timestamped, attributable automated actions with a human approval gate">
 2026-08-24T09:14:02Z  run=r_8f31  actor=automation:screening  action=score.candidate
                       subject=cand_40219  rubric=consulting_v3  model=&lt;configured&gt;
                       inputs=sha256:9c1f…a7  score=72/100  confidence=0.81
@@ -294,75 +287,65 @@
                       subject=cand_40219  agreed_with_score=true
                       next=schedule.interview  approved_by=user:s.rani@…</pre>
 
-    <div class="blocks">
-      <div class="block">
-        <h3>Every line is attributable</h3>
-        <p>Automated actions carry the automation as actor; human decisions carry the
-          person. You can always tell which one did what, which is the distinction your
-          client's auditor actually cares about.</p>
-      </div>
-      <div class="block">
-        <h3>The reasoning is retrievable</h3>
-        <p>Scores reference a stored rationale rather than being a bare number, so a
-          decision can be explained months later without re-running anything.</p>
-      </div>
-      <div class="block">
-        <h3>Inputs are hashed, not copied</h3>
-        <p>The log proves what was processed without becoming a second copy of the
-          sensitive data it describes.</p>
-      </div>
-      <div class="block">
-        <h3>It lands in your log sink</h3>
-        <p>In embedded deployments the trail is written to your own logging
-          infrastructure, under your retention policy — not held by us and handed over on
-          request.</p>
-      </div>
-    </div>
+    <ul class="spec-list reveal">
+      <li>
+        <b>Every line is attributable</b>
+        <p>Automated actions carry the automation as actor; human decisions carry the person. You can always tell which one did what, which is the distinction your client's auditor actually cares about.</p>
+      </li>
+      <li>
+        <b>The reasoning is retrievable</b>
+        <p>Scores reference a stored rationale rather than being a bare number, so a decision can be explained months later without re-running anything.</p>
+      </li>
+      <li>
+        <b>Inputs are hashed, not copied</b>
+        <p>The log proves what was processed without becoming a second copy of the sensitive data it describes.</p>
+      </li>
+      <li>
+        <b>It lands in your log sink</b>
+        <p>In embedded deployments the trail is written to your own logging infrastructure, under your retention policy — not held by us and handed over on request.</p>
+      </li>
+    </ul>
   </section>
 
   <!-- ---------- Human gates ---------- -->
   <section class="deep" id="human-gates">
-    <div class="deep__head">
+    <div class="deep__head reveal">
       <span class="pill pill--eyebrow">06 · Human-in-the-loop</span>
       <h2>What never happens without a person.</h2>
       <p>The gates are agreed in writing during the design week and enforced in code, not
         left to configuration somebody can quietly loosen later.</p>
     </div>
 
-    <div class="blocks">
-      <div class="block block--human">
-        <h3>Anything adverse to a person</h3>
-        <p>Rejections, adverse assessments, anything that affects someone's employment or
-          candidacy. The system ranks and explains; a named person decides.</p>
-      </div>
-      <div class="block block--human">
-        <h3>Anything that leaves your firm</h3>
-        <p>Client-facing documents, external emails, filings. Automation drafts; a person
-          sends.</p>
-      </div>
-      <div class="block block--human">
-        <h3>Anything that moves money</h3>
-        <p>Payments, write-offs, credit notes, vendor approvals. The exceptions get
-          surfaced with the evidence attached so the decision is quick, not automatic.</p>
-      </div>
-      <div class="block block--human">
-        <h3>Anything irreversible</h3>
-        <p>Deletion, overwriting a system of record, or any action with no clean undo. If
-          it can't be walked back, it doesn't happen unattended.</p>
-      </div>
+    <div class="gates reveal">
+      <p class="human-note">
+        <span class="human-note__mark" aria-hidden="true">✓</span>
+        <span><b>Anything adverse to a person</b> Rejections, adverse assessments, anything that affects someone's employment or candidacy. The system ranks and explains; a named person decides.</span>
+      </p>
+      <p class="human-note">
+        <span class="human-note__mark" aria-hidden="true">✓</span>
+        <span><b>Anything that leaves your firm</b> Client-facing documents, external emails, filings. Automation drafts; a person sends.</span>
+      </p>
+      <p class="human-note">
+        <span class="human-note__mark" aria-hidden="true">✓</span>
+        <span><b>Anything that moves money</b> Payments, write-offs, credit notes, vendor approvals. The exceptions get surfaced with the evidence attached so the decision is quick, not automatic.</span>
+      </p>
+      <p class="human-note">
+        <span class="human-note__mark" aria-hidden="true">✓</span>
+        <span><b>Anything irreversible</b> Deletion, overwriting a system of record, or any action with no clean undo. If it can't be walked back, it doesn't happen unattended.</span>
+      </p>
     </div>
   </section>
 
   <!-- ---------- Ownership & exit ---------- -->
   <section class="deep" id="exit">
-    <div class="deep__head">
+    <div class="deep__head reveal">
       <span class="pill pill--eyebrow">07 · Ownership &amp; exit</span>
       <h2>The exit is designed before the build starts.</h2>
       <p>Lock-in is the objection behind most security questions, so it's worth answering
         directly rather than through a data-flow diagram.</p>
     </div>
 
-    <ul class="spec-list">
+    <ul class="spec-list reveal">
       <li>
         <b>Source code purchase</b>
         <p>An explicit option, priced up front at the start of the engagement, with a
@@ -393,58 +376,46 @@
 
   <!-- ---------- Incident response ---------- -->
   <section class="deep" id="incidents">
-    <div class="deep__head">
+    <div class="deep__head reveal">
       <span class="pill pill--eyebrow">08 · Incident response</span>
       <h2>If something goes wrong.</h2>
     </div>
 
-    <div class="blocks">
-      <div class="block">
-        <h3>Who to contact</h3>
-        <p>A named engineer on the build, plus a written escalation path agreed at signing
-          — not a shared inbox. Until an engagement starts, reach us at
-          <a class="link-accent" href="mailto:hello@wheelz365.com">hello@wheelz365.com</a>.</p>
-      </div>
-      <div class="block">
-        <h3>Notification</h3>
-        <p>Notification timelines and obligations are set in the engagement contract
-          against your requirements, because your obligations to your own clients are what
-          determine ours to you.</p>
-      </div>
-      <div class="block">
-        <h3>Containment</h3>
-        <p>In embedded deployments you hold the kill switch: revoke the keys or stop the
-          service and the automation stops immediately, without waiting for us.</p>
-      </div>
-      <div class="block">
-        <h3>Reconstruction</h3>
-        <p>Because every action is logged and attributable, "what did it touch" is a query
-          rather than an investigation.</p>
-      </div>
-    </div>
+    <ul class="spec-list reveal">
+      <li>
+        <b>Who to contact</b>
+        <p>A named engineer on the build, plus a written escalation path agreed at signing — not a shared inbox. Until an engagement starts, reach us at <a class="link-accent" href="mailto:hello@wheelz365.com">hello@wheelz365.com</a>.</p>
+      </li>
+      <li>
+        <b>Notification</b>
+        <p>Notification timelines and obligations are set in the engagement contract against your requirements, because your obligations to your own clients are what determine ours to you.</p>
+      </li>
+      <li>
+        <b>Containment</b>
+        <p>In embedded deployments you hold the kill switch: revoke the keys or stop the service and the automation stops immediately, without waiting for us.</p>
+      </li>
+      <li>
+        <b>Reconstruction</b>
+        <p>Because every action is logged and attributable, "what did it touch" is a query rather than an investigation.</p>
+      </li>
+    </ul>
   </section>
 
   <!-- ---------- Security team FAQ ---------- -->
   <section class="deep" id="security-faq">
-    <div class="deep__head">
+    <div class="deep__head reveal">
       <span class="pill pill--eyebrow">09 · Due diligence</span>
       <h2>Questions your security team will ask.</h2>
     </div>
 
-    <div class="accordion accordion--faq">
+    <div class="accordion accordion--faq reveal">
       <div class="acc-item is-open">
         <button class="acc-item__head" type="button" aria-expanded="true">
           <span class="acc-item__icon" aria-hidden="true">◈</span>
           <span class="acc-item__title">Are you SOC 2 or ISO 27001 certified?</span>
         </button>
         <div class="acc-item__body">
-          <p>No. We hold no security certifications today, and we would rather tell you
-            that here than have you discover it in a questionnaire. What we can offer
-            instead is architectural: in the embedded mode your data never reaches our
-            infrastructure, so the certification question largely collapses into your own
-            controls, which you have already audited. If a certification is a hard
-            procurement gate for you, say so early and we'll tell you honestly whether we
-            can clear it in your timeframe.</p>
+            <p>No — and we would rather say so here than have you find it in a questionnaire. What we offer instead is architectural: in the embedded mode your data never reaches our infrastructure, so the question largely collapses into controls you have already audited. If a certification is a hard procurement gate, tell us early and we will say honestly whether we can clear it in your timeframe.</p>
         </div>
       </div>
 
@@ -454,9 +425,7 @@
           <span class="acc-item__title">Will you sign our DPA and security addendum?</span>
         </button>
         <div class="acc-item__body">
-          <p>Data processing terms are agreed per engagement, against your paper. We don't
-            publish a template here, because a mid-size firm's own DPA is usually the
-            faster path and we would rather review yours than ask you to accept ours.</p>
+            <p>Data processing terms are agreed per engagement, against your paper. We would rather review yours than ask you to accept ours.</p>
         </div>
       </div>
 
@@ -466,11 +435,7 @@
           <span class="acc-item__title">Who at your firm can access our environment?</span>
         </button>
         <div class="acc-item__body">
-          <p>Only the engineers on your build, only through access you grant and can
-            revoke, and only for as long as you grant it. Access goes through your
-            identity provider so it appears in your own logs rather than ours. Where your
-            policy forbids remote access to production, we work on-site instead — that is
-            a normal arrangement for us, not an exception.</p>
+            <p>Only the engineers on your build, only through access you grant and can revoke, and only for as long as you grant it. It goes through your identity provider, so it appears in your logs rather than ours. Where your policy forbids remote access to production we work on-site — a normal arrangement for us, not an exception.</p>
         </div>
       </div>
 
@@ -480,11 +445,7 @@
           <span class="acc-item__title">Do you use subprocessors?</span>
         </button>
         <div class="acc-item__body">
-          <p>In the embedded mode the only third party in the data path is the model
-            provider, and which one is named in your engagement documents alongside its
-            region and retention terms. We don't maintain a public subprocessor list
-            because it would be a list of one, and the specific one depends on your
-            build.</p>
+            <p>In the embedded mode the only third party in the data path is the model provider, and which one is named in your engagement documents alongside its region and retention terms. No public list, because it would be a list of one and the one depends on your build.</p>
         </div>
       </div>
 
@@ -494,11 +455,7 @@
           <span class="acc-item__title">How do we know the model isn't hallucinating into a client deliverable?</span>
         </button>
         <div class="acc-item__body">
-          <p>Two ways, and neither is "the model is good". First, architecture: outputs
-            that reach a client pass a human gate by construction. Second, verification —
-            where a fact matters we cross-check it against a second source and mark what
-            couldn't be verified rather than filling the gap. A system that says "I don't
-            know" is the one you can put in front of a client.</p>
+            <p>Two ways, neither of which is "the model is good". Architecture: anything reaching a client passes a human gate by construction. And verification — where a fact matters we cross-check it against a second source and mark what could not be verified rather than filling the gap. A system that says "I don't know" is the one you can put in front of a client.</p>
         </div>
       </div>
 
@@ -508,10 +465,7 @@
           <span class="acc-item__title">What if our client audits us about this system?</span>
         </button>
         <div class="acc-item__body">
-          <p>That's the case we build for. You should be able to answer where the data
-            went, what the system did, why it decided what it decided, and who signed off
-            — from your own logs, without calling us. If you can't answer those four
-            questions from your own systems, we've built it wrong.</p>
+            <p>That is the case we build for. From your own logs, without calling us, you should be able to answer where the data went, what the system did, why it decided as it did, and who signed off. If you cannot answer those four, we built it wrong.</p>
         </div>
       </div>
     </div>
