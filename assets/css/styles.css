@@ -71,6 +71,19 @@
 
   --glass-fill: rgba(13, 13, 16, 0.72);
 
+  /* The hero canvas is dark in EVERY theme, so the hero band and the product
+     surfaces (mockups, flow, log) keep their own ink independent of --bg. On a
+     light theme that reads as deliberate — dark UI is "the software" — and it
+     gives the dark-hero / light-body hybrid for free.
+     Space-separated so rgb(var(--hero-ink) / 0.6) works. */
+  --hero-ink: 5 5 6;
+
+  /* buttons flip on light themes; tokenised so .btn--light doesn't need a
+     per-theme override */
+  --btn-bg: #ffffff;
+  --btn-fg: #07070a;
+  --btn-bg-hover: #f1f1f4;
+
   /* numOctaves=1 (4 is ~4x the raster cost and indistinguishable at 5%),
      stitchTiles so seams don't show, saturate 0 because raw feTurbulence is
      coloured and reads as chroma dirt on this palette. */
@@ -133,7 +146,7 @@ table { border-collapse: collapse; width: 100%; }
 /* the accent ring disappears against the white pill buttons, so those get a
    dark ring instead — every interactive element must show focus somewhere */
 .btn--light:focus-visible, .skip-link:focus-visible {
-  outline-color: #07070a;
+  outline-color: var(--btn-fg);
   outline-offset: 2px;
 }
 
@@ -225,10 +238,10 @@ table { border-collapse: collapse; width: 100%; }
   white-space: nowrap;
 }
 .btn--light {
-  background: #fff; color: #07070a;
+  background: var(--btn-bg); color: var(--btn-fg);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 10px 30px rgba(0, 0, 0, 0.45);
 }
-.btn--light:hover { transform: translateY(-1px); background: #f1f1f4; }
+.btn--light:hover { transform: translateY(-1px); background: var(--btn-bg-hover); }
 .btn--ghost {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--line);
@@ -357,7 +370,7 @@ table { border-collapse: collapse; width: 100%; }
   border-bottom: 1px solid var(--line);
 }
 .nav__mobile a { padding: 11px 2px; color: var(--fg-muted); font-size: 0.9375rem; }
-.nav__mobile .btn { margin-top: 10px; color: #07070a; }
+.nav__mobile .btn { margin-top: 10px; color: var(--btn-fg); }
 
 @media (min-width: 1024px) {
   .nav__links { display: flex; }
@@ -383,12 +396,18 @@ table { border-collapse: collapse; width: 100%; }
   z-index: -2;
 }
 /* keeps the top of the hero near-black so the headline always reads */
+/* --hero-ink, not --bg, for the dark stops: the canvas is dark in every theme,
+   so the hero stays a dark band. Only the final stop fades to --bg, which is
+   what blends the hero into a light page below it. */
 .hero__scrim {
   position: absolute; inset: 0; z-index: -1;
   background:
-    radial-gradient(130% 74% at 50% 8%, rgba(5, 5, 6, 0.94) 0%, rgba(5, 5, 6, 0.6) 44%, rgba(5, 5, 6, 0) 78%),
-    linear-gradient(to bottom, var(--bg) 0%, rgba(5, 5, 6, 0.6) 26%, rgba(5, 5, 6, 0.08) 56%, rgba(5, 5, 6, 0) 72%),
-    linear-gradient(to bottom, rgba(5, 5, 6, 0) 88%, var(--bg) 100%);
+    radial-gradient(130% 74% at 50% 8%,
+      rgb(var(--hero-ink) / 0.94) 0%, rgb(var(--hero-ink) / 0.6) 44%, rgb(var(--hero-ink) / 0) 78%),
+    linear-gradient(to bottom,
+      rgb(var(--hero-ink)) 0%, rgb(var(--hero-ink) / 0.6) 26%,
+      rgb(var(--hero-ink) / 0.08) 56%, rgb(var(--hero-ink) / 0) 72%),
+    linear-gradient(to bottom, rgb(var(--hero-ink) / 0) 86%, var(--bg) 100%);
 }
 .hero__content { position: relative; text-align: center; }
 /* a soft dark halo so the copy stays crisp while the waves stay bright at the edges */
@@ -2043,3 +2062,188 @@ table { border-collapse: collapse; width: 100%; }
     animation-iteration-count: 1 !important;
   }
 }
+
+/* ==========================================================================
+   THEMES — token overrides only. Nothing structural changes.
+
+   Every alpha below was solved numerically, not eyeballed: on a light
+   background a low-alpha dark text washes toward the background, so the light
+   themes need HIGHER alphas than the dark ones to clear the same contrast bar.
+   Measured ratios are in the comment on each block. Don't nudge these by eye.
+
+   Constant across all themes: the hero canvas, the .app mockups, the .flow
+   diagram and .mono-log stay dark. They are "the product", and on a light page
+   they read as a deliberate inversion rather than an oversight.
+   ========================================================================== */
+
+/* ---- slate — softer dark. Less contrast fatigue than near-black, which is
+   the actual complaint about long-form reading on dark.
+   body 15.9:1 · muted 7.8:1 · dim 5.7:1 -------------------------------------- */
+:root[data-theme="slate"] {
+  --bg:            #14161b;
+  --bg-soft:       #171a20;
+  --panel:         #1b1e25;
+  --panel-2:       #20242c;
+  --panel-3:       #262a33;
+  --line:          rgba(255, 255, 255, 0.10);
+  --line-strong:   rgba(255, 255, 255, 0.18);
+  --fg:            #eef0f4;
+  --fg-muted:      rgba(238, 240, 244, 0.68);
+  --fg-dim:        rgba(238, 240, 244, 0.56);
+  --glass-fill:    rgba(27, 30, 37, 0.72);
+}
+
+/* ---- ink — deep navy rather than neutral black. Warmer, richer, still dark.
+   body 17.1:1 · muted 7.7:1 · dim 5.5:1 -------------------------------------- */
+:root[data-theme="ink"] {
+  --bg:            #0a0f1c;
+  --bg-soft:       #0c1120;
+  --panel:         #101728;
+  --panel-2:       #141c30;
+  --panel-3:       #1a2338;
+  --line:          rgba(226, 234, 250, 0.11);
+  --line-strong:   rgba(226, 234, 250, 0.19);
+  --fg:            #eef2fa;
+  --fg-muted:      rgba(238, 242, 250, 0.66);
+  --fg-dim:        rgba(238, 242, 250, 0.54);
+  --glass-fill:    rgba(16, 23, 40, 0.72);
+  --hero-ink:      7 11 22;
+}
+
+/* ---- paper — warm off-white. Reads like a professional-services document,
+   which is what the buyer actually is.
+   body 17.6:1 · muted 6.6:1 · dim 4.6:1 -------------------------------------- */
+:root[data-theme="paper"] {
+  --bg:            #faf8f4;
+  --bg-soft:       #f3f0ea;
+  --panel:         #ffffff;
+  --panel-2:       #f7f4ee;
+  --panel-3:       #efebe3;
+  --line:          rgba(20, 18, 14, 0.10);
+  --line-strong:   rgba(20, 18, 14, 0.20);
+  --fg:            #14120e;
+  --fg-muted:      rgba(20, 18, 14, 0.69);
+  --fg-dim:        rgba(20, 18, 14, 0.59);
+  --accent-solid:  #4b53d8;   /* the dark-theme lilac fails contrast on white */
+  --glass-fill:    rgba(255, 255, 255, 0.78);
+  --sheen-top:     inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --sheen-bot:     inset 0 -1px 0 rgba(20, 18, 14, 0.06);
+  --lift-1: 0 6px 16px -8px rgba(20, 18, 14, 0.16);
+  --lift-2: 0 18px 40px -16px rgba(20, 18, 14, 0.20), 0 3px 8px -4px rgba(20, 18, 14, 0.10);
+  --lift-3: 0 32px 70px -22px rgba(20, 18, 14, 0.26), 0 6px 14px -6px rgba(20, 18, 14, 0.12);
+  --btn-bg:        #14120e;
+  --btn-fg:        #faf8f4;
+  --btn-bg-hover:  #2a251d;
+}
+
+/* ---- snow — cool near-white. The Stripe/Vercel register.
+   body 18.4:1 · muted 6.5:1 · dim 4.8:1 -------------------------------------- */
+:root[data-theme="snow"] {
+  --bg:            #fbfcfd;
+  --bg-soft:       #f2f5f8;
+  --panel:         #ffffff;
+  --panel-2:       #f6f8fa;
+  --panel-3:       #eef2f6;
+  --line:          rgba(13, 17, 23, 0.10);
+  --line-strong:   rgba(13, 17, 23, 0.20);
+  --fg:            #0d1117;
+  --fg-muted:      rgba(13, 17, 23, 0.68);
+  --fg-dim:        rgba(13, 17, 23, 0.59);
+  --accent-solid:  #4b53d8;
+  --glass-fill:    rgba(255, 255, 255, 0.80);
+  --sheen-top:     inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --sheen-bot:     inset 0 -1px 0 rgba(13, 17, 23, 0.06);
+  --lift-1: 0 6px 16px -8px rgba(13, 17, 23, 0.14);
+  --lift-2: 0 18px 40px -16px rgba(13, 17, 23, 0.18), 0 3px 8px -4px rgba(13, 17, 23, 0.09);
+  --lift-3: 0 32px 70px -22px rgba(13, 17, 23, 0.24), 0 6px 14px -6px rgba(13, 17, 23, 0.10);
+  --btn-bg:        #0d1117;
+  --btn-fg:        #ffffff;
+  --btn-bg-hover:  #23292f;
+}
+
+/* ---- light-theme structural corrections -----------------------------------
+   Three things that are correct on dark and wrong on light. */
+:root[data-theme="paper"], :root[data-theme="snow"] {
+  /* the ambient glows were tuned to add light to a dark page; on a light page
+     they must subtract, or they read as grubby smears */
+  --glow-1: rgba(75, 83, 216, 0.07);
+  --glow-2: rgba(23, 184, 119, 0.05);
+}
+:root[data-theme="paper"] .section--lit::before,
+:root[data-theme="snow"] .section--lit::before {
+  background:
+    radial-gradient(120% 70% at var(--glow-x, 18%) -10%, var(--glow-1), transparent 62%),
+    radial-gradient(90% 60% at var(--glow-x2, 86%) 6%, var(--glow-2), transparent 58%);
+}
+/* grain is a dark-page device; on light it just muddies the type */
+:root[data-theme="paper"] .grain::after,
+:root[data-theme="snow"] .grain::after { opacity: 0; }
+/* ---- the dark hero band on a light page ------------------------------------
+   `color` must be set directly, not via the token: body{color:var(--fg)} is
+   computed AT body, and descendants inherit that computed colour — so
+   redefining --fg on .hero alone changes nothing. That bug made the headline
+   render dark-on-dark. */
+:root[data-theme="paper"] .hero,
+:root[data-theme="snow"] .hero {
+  --fg: #f6f6f8;
+  --fg-muted: rgba(246, 246, 248, 0.72);
+  --fg-dim: rgba(246, 246, 248, 0.6);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.22);
+  color: #f6f6f8;
+}
+:root[data-theme="paper"] .hero__sub,
+:root[data-theme="snow"] .hero__sub { color: rgba(246, 246, 248, 0.78); }
+:root[data-theme="paper"] .hero .btn--light,
+:root[data-theme="snow"] .hero .btn--light { background: #fff; color: #07070a; }
+:root[data-theme="paper"] .hero .btn--ghost,
+:root[data-theme="snow"] .hero .btn--ghost {
+  color: #f6f6f8; border-color: rgba(255, 255, 255, 0.26);
+}
+:root[data-theme="paper"] .hero .pill--eyebrow,
+:root[data-theme="snow"] .hero .pill--eyebrow {
+  color: rgba(246, 246, 248, 0.82);
+  background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)), rgba(10,10,14,0.55);
+}
+
+/* ---- the nav crosses from dark hero to light page --------------------------
+   It is fixed and transparent, so at rest it sits over the dark hero and after
+   scrolling over the light body. The text has to flip with it. */
+:root[data-theme="paper"] .nav:not(.is-stuck),
+:root[data-theme="snow"] .nav:not(.is-stuck) {
+  color: #f6f6f8;
+  /* the token too, for descendants that declare color:var(--fg-muted)
+     themselves — .brand__name-accent is the one that caught this */
+  --fg-muted: rgba(246, 246, 248, 0.66);
+  --fg-dim: rgba(246, 246, 248, 0.5);
+}
+:root[data-theme="paper"] .nav:not(.is-stuck) .nav__links a,
+:root[data-theme="snow"] .nav:not(.is-stuck) .nav__links a,
+:root[data-theme="paper"] .nav:not(.is-stuck) .kbd-hint,
+:root[data-theme="snow"] .nav:not(.is-stuck) .kbd-hint {
+  color: rgba(246, 246, 248, 0.72);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+:root[data-theme="paper"] .nav:not(.is-stuck) .nav__links a:hover,
+:root[data-theme="snow"] .nav:not(.is-stuck) .nav__links a:hover { color: #fff; }
+:root[data-theme="paper"] .nav:not(.is-stuck) .btn--light,
+:root[data-theme="snow"] .nav:not(.is-stuck) .btn--light { background: #fff; color: #07070a; }
+:root[data-theme="paper"] .nav:not(.is-stuck) .nav__toggle span,
+:root[data-theme="snow"] .nav:not(.is-stuck) .nav__toggle span { background: #f6f6f8; }
+:root[data-theme="paper"] .nav.is-stuck,
+:root[data-theme="snow"] .nav.is-stuck {
+  background: linear-gradient(180deg, rgb(var(--nav-stuck) / 0.94), rgb(var(--nav-stuck) / 0.86));
+}
+:root[data-theme="paper"] { --nav-stuck: 250 248 244; }
+:root[data-theme="snow"]  { --nav-stuck: 251 252 253; }
+
+/* the big figure's gradient started at #fff, which vanishes on a light page */
+:root[data-theme="paper"] .figure__num,
+:root[data-theme="snow"] .figure__num {
+  background: linear-gradient(165deg, var(--fg) 4%, #4b53d8 58%, rgba(75, 83, 216, 0.45) 100%);
+  -webkit-background-clip: text; background-clip: text;
+}
+
+/* the capability bar straddles the hero edge, so it keeps a neutral fill */
+:root[data-theme="paper"] .capbar,
+:root[data-theme="snow"] .capbar { background: var(--panel); }
