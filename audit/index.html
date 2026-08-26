@@ -197,32 +197,19 @@
           <span class="field__note" id="note-firm-size"></span>
         </label>
 
-        <!-- The most valuable field on the site: it qualifies the lead and hands us
-             the opening line of the first call. Required, deliberately. -->
+        <!-- One field replacing three. The placeholder does the work the three
+             separate questions used to: it prompts for the repetitive process
+             (the qualifying signal) and for a delivery preference, without
+             making either its own control. Required, because it is now the only
+             free-text field on an otherwise identity-only form — arriving at the
+             call knowing nothing is the failure mode this prevents. -->
         <label class="field">
-          <span class="field__label">What's the most repetitive process in your firm?
+          <span class="field__label">Notes for the call
             <span class="req" aria-hidden="true">*</span></span>
-          <textarea name="repetitive_process" rows="3" required
-                    aria-describedby="note-process"
-                    placeholder="e.g. our analysts spend two days a week pulling company data by hand"></textarea>
-          <span class="field__note" id="note-process">However roughly you want to put it — this is the most useful thing you can tell us.</span>
-        </label>
-
-        <label class="field field--select">
-          <span class="field__label">How would you want it delivered?</span>
-          <select name="delivery" aria-describedby="note-delivery">
-            <option value="">Not sure yet</option>
-            <option>Hosted by you</option>
-            <option>Inside our environment</option>
-            <option>We'd want to own the code</option>
-          </select>
-          <span class="field__note" id="note-delivery">Optional — and you can change your mind later either way.</span>
-        </label>
-
-        <label class="field">
-          <span class="field__label">Anything else</span>
-          <textarea name="anything_else" rows="2" aria-describedby="note-else"></textarea>
-          <span class="field__note" id="note-else"></span>
+          <textarea name="notes" rows="5" required
+                    aria-describedby="note-notes"
+                    placeholder="What's the most repetitive process in your firm? Anything else worth knowing before we talk — how you'd want it delivered, what you've already tried, who should be on the call."></textarea>
+          <span class="field__note" id="note-notes">However roughly you want to put it — this is the most useful thing you can tell us.</span>
         </label>
 
         <button class="btn btn--light btn--block btn--lg" type="submit">
