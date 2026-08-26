@@ -886,6 +886,7 @@ table { border-collapse: collapse; width: 100%; }
   margin-top: 22px;
   border: 1px solid var(--line); border-radius: var(--radius-lg);
   background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  box-shadow: var(--sheen-top), var(--lift-1);
   padding: clamp(22px, 3vw, 34px);
   display: grid; gap: 26px;
 }
@@ -1229,7 +1230,8 @@ table { border-collapse: collapse; width: 100%; }
 .zone {
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--panel);
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  box-shadow: var(--sheen-top), var(--lift-1);
   padding: 22px 20px;
 }
 .zone--boundary {
@@ -1261,6 +1263,7 @@ table { border-collapse: collapse; width: 100%; }
   overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  box-shadow: var(--sheen-top), var(--lift-1);
   -webkit-overflow-scrolling: touch;
 }
 .compare-table table { min-width: 720px; font-size: 0.8125rem; }
@@ -1314,6 +1317,7 @@ table { border-collapse: collapse; width: 100%; }
 .page-head::before {
   content: '';
   position: absolute; inset: 0;
+  z-index: var(--z-atmos);
   background:
     radial-gradient(120% 80% at 18% -10%, rgba(124, 134, 255, 0.16), transparent 60%),
     radial-gradient(90% 70% at 88% 0%, rgba(23, 184, 119, 0.10), transparent 58%);
@@ -1354,12 +1358,17 @@ table { border-collapse: collapse; width: 100%; }
 }
 .deep__head p { margin-top: 16px; color: var(--fg-muted); line-height: 1.65; }
 
+/* The subpages inherit --lift-* and --sheen-top as tokens but applied them
+   nowhere, so every bordered box was a flat hairline while the home page was
+   built on layered depth. Applying them here closes most of that gap with no
+   markup change on any page. */
 .blocks {
   margin-top: 36px;
   display: grid; gap: 1px;
   background: var(--line);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
+  box-shadow: var(--sheen-top), var(--lift-1);
   overflow: hidden;
   overflow: clip;
 }
@@ -1392,6 +1401,7 @@ table { border-collapse: collapse; width: 100%; }
   display: flex; gap: 16px; align-items: flex-start;
   border: 1px solid rgba(52, 199, 89, 0.32);
   border-radius: var(--radius);
+  box-shadow: var(--sheen-top), var(--lift-1);
   background: linear-gradient(180deg, rgba(52, 199, 89, 0.07), transparent);
   padding: 22px 24px;
 }
