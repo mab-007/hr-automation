@@ -27,6 +27,19 @@
       media="print" onload="this.media='all';this.onload=null" />
 <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=general-sans@400,500,600,700&display=swap" /></noscript>
 <link rel="stylesheet" href="assets/css/styles.css" />
+
+<!-- Tier detection, before first paint. Enhancements are opt-in, so no-JS and
+     every failure mode land on the fast baseline. Tilt/cursor-glow are gated on
+     a fine pointer because they are meaningless on touch, not just costly. -->
+<script>
+(function (r, m) {
+  var still = m('(prefers-reduced-motion: reduce)').matches;
+  var fine  = m('(hover: hover) and (pointer: fine)').matches;
+  var lean  = (navigator.deviceMemory || 8) < 4 || (navigator.hardwareConcurrency || 8) < 4;
+  r.dataset.motion = still ? 'still' : 'ok';
+  r.dataset.depth  = (still || lean || !fine) ? 'flat' : 'full';
+})(document.documentElement, matchMedia);
+</script>
 </head>
 <body>
 
@@ -34,6 +47,8 @@
 
 <!-- ============================== NAV ============================== -->
 <header class="nav" id="nav">
+  <span class="nav__progress" id="nav-progress" aria-hidden="true"></span>
+
   <div class="container container--wide nav__inner">
     <a class="brand" href="#hero" aria-label="Wheelz365 home">
       <span class="brand__mark" aria-hidden="true"></span>
@@ -41,41 +56,70 @@
     </a>
 
     <nav class="nav__links" aria-label="Primary">
-      <a href="what-we-build/">What we build</a>
-      <a href="#how-we-work">How we work</a>
-      <a href="security/">Security</a>
-      <a href="#who">Who we work with</a>
+      <a href="#build" data-spy="build">What we build</a>
+      <a href="#how" data-spy="how">How we work</a>
+      <a href="#own" data-spy="own">Own the code</a>
+      <a href="#security" data-spy="security">Security</a>
     </nav>
 
     <div class="nav__actions">
+      <button class="kbd-hint" type="button" id="palette-open" aria-label="Search and jump to a section">
+        <span class="kbd-hint__k" aria-hidden="true">⌘</span><span aria-hidden="true">K</span>
+      </button>
       <a class="btn btn--light btn--sm" href="audit/">
         Book an audit <span class="btn__dot" aria-hidden="true">→</span>
       </a>
-      <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <button class="nav__toggle" type="button" id="menu-toggle"
+              aria-label="Open menu" aria-expanded="false" aria-controls="menu-overlay">
         <span></span><span></span>
       </button>
     </div>
   </div>
-
-  <div class="nav__mobile" id="mobile-menu" hidden>
-    <a href="what-we-build/">What we build</a>
-    <a href="#how-we-work">How we work</a>
-    <a href="security/">Security</a>
-    <a href="#who">Who we work with</a>
-    <a class="btn btn--light btn--block" href="audit/">Book an audit</a>
-  </div>
 </header>
+
+<!-- full-screen menu -->
+<div class="overlay" id="menu-overlay" hidden>
+  <div class="overlay__inner container">
+    <nav class="overlay__nav" aria-label="Menu">
+      <a href="#build"    style="--i:0">What we build</a>
+      <a href="#how"      style="--i:1">How we work</a>
+      <a href="#own"      style="--i:2">Own the code</a>
+      <a href="#security" style="--i:3">Security</a>
+      <a href="what-we-build/" style="--i:4">Every automation</a>
+      <a href="security/"      style="--i:5">Security detail</a>
+    </nav>
+    <a class="btn btn--light btn--lg overlay__cta" href="audit/" style="--i:6">
+      Book an audit <span class="btn__dot" aria-hidden="true">→</span>
+    </a>
+  </div>
+</div>
+
+<!-- ⌘K palette -->
+<div class="palette" id="palette" hidden>
+  <div class="palette__scrim" data-palette-close></div>
+  <div class="palette__box glass" role="dialog" aria-modal="true" aria-label="Jump to">
+    <input class="palette__input" id="palette-input" type="text" autocomplete="off"
+           spellcheck="false" placeholder="Jump to…" aria-label="Jump to"
+           aria-controls="palette-list" aria-expanded="true" role="combobox" />
+    <ul class="palette__list" id="palette-list" role="listbox" aria-label="Results"></ul>
+    <p class="palette__foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> move</span>
+      <span><kbd>↵</kbd> go</span>
+      <span><kbd>esc</kbd> close</span>
+    </p>
+  </div>
+</div>
 
 <main>
 
 <!-- ============================== HERO ============================== -->
-<section class="hero" id="hero">
+<section class="hero grain" id="hero">
   <canvas class="hero__canvas" id="wave-canvas" aria-hidden="true"></canvas>
   <div class="hero__scrim" aria-hidden="true"></div>
 
   <div class="container hero__content">
-    <!-- A capability statement, not a customer count. There is no number here
-         on purpose: we don't have one we can defend in the room yet. -->
+    <!-- A capability statement, not a customer count. No number here on purpose:
+         we don't have one we can defend in the room yet. -->
     <p class="pill pill--eyebrow hero-in" style="--i:0">
       <span class="pill__dot" aria-hidden="true"></span>
       Custom AI automation for professional services
@@ -86,16 +130,15 @@
     </h1>
 
     <p class="hero__sub hero-in" style="--i:2">
-      You bring the pain points. We design the solution, build it in six weeks, and run
-      it inside your security boundary — where your client data never leaves. And if you
-      ever want the source code, you can buy it outright and keep our engineers on.
+      You bring the pain points. We design it, build it in six weeks, and run it inside
+      your security boundary.
     </p>
 
     <div class="hero__cta hero-in" style="--i:3">
       <a class="btn btn--light btn--lg" href="audit/">
         Book a pain-point audit <span class="btn__dot" aria-hidden="true">→</span>
       </a>
-      <a class="btn btn--ghost btn--lg" href="#how-we-work">See how we work</a>
+      <a class="btn btn--ghost btn--lg" href="#how">See how we work</a>
     </div>
 
     <p class="hero__note hero-in" style="--i:4">
@@ -105,345 +148,299 @@
   </div>
 </section>
 
-<!-- ============================== CAPABILITY STRIP ============================== -->
-<!-- Replace with 4–6 greyscale client logos ONLY once we have written permission.
-     Until then a capability we can prove beats a logo we can't show. -->
-<section class="section section--cap" id="capabilities">
-  <div class="container">
-    <ul class="cap-strip reveal">
-      <li><span class="cap-strip__tick" aria-hidden="true">✓</span><span><b>Deployed in your cloud</b></span></li>
-      <li><span class="cap-strip__tick" aria-hidden="true">✓</span><span><b>Your data never trains a model</b></span></li>
-      <li><span class="cap-strip__tick" aria-hidden="true">✓</span><span><b>Source code purchasable</b></span></li>
-      <li><span class="cap-strip__tick" aria-hidden="true">✓</span><span><b>Engineers on-site when you need them</b></span></li>
-    </ul>
-  </div>
-</section>
+<!-- ============================== CAPABILITY BAR ============================== -->
+<!-- Overlaps the hero's lower edge — establishes the depth language immediately.
+     Swap for greyscale client logos ONLY with written permission. -->
+<div class="container">
+  <ul class="capbar glass reveal">
+    <li><span class="capbar__tick" aria-hidden="true">✓</span>Runs in your cloud</li>
+    <li><span class="capbar__tick" aria-hidden="true">✓</span>Never trains a model</li>
+    <li><span class="capbar__tick" aria-hidden="true">✓</span>Buy the source code</li>
+    <li><span class="capbar__tick" aria-hidden="true">✓</span>Engineers on-site</li>
+  </ul>
+</div>
 
 <!-- ============================== PROBLEM ============================== -->
-<section class="section" id="problem">
+<section class="section section--lit" id="problem" style="--glow-x: 78%">
   <div class="container">
-    <div class="eyebrow-wrap reveal"><span class="pill pill--eyebrow">The state of play</span></div>
-    <h2 class="section__title reveal">Most AI projects don't fail on the model. They fail on ownership.</h2>
-    <p class="section__sub reveal">
-      Gartner expects 40% of agentic AI projects to be cancelled by 2027. Only 23% of
-      organisations have scaled an agent deployment at all. The pattern behind the
-      failures is remarkably consistent.
-    </p>
-
-    <div class="cards-3">
-      <article class="card card--negative reveal">
-        <div class="card__head"><span class="card__x" aria-hidden="true">✗</span><b>Nobody owns it</b></div>
-        <p>A pilot gets built by whoever was free. It works in a demo, then drifts, then
-          nobody knows who maintains it.</p>
-      </article>
-
-      <article class="card card--negative reveal">
-        <div class="card__head"><span class="card__x" aria-hidden="true">✗</span><b>The data boundary was never defined</b></div>
-        <p>Legal asks where client data goes. There's no good answer. The project quietly
-          stops.</p>
-      </article>
-
-      <article class="card card--negative reveal">
-        <div class="card__head"><span class="card__x" aria-hidden="true">✗</span><b>Nothing was measured</b></div>
-        <p>No before-and-after numbers, so there's no case for a second phase.</p>
-      </article>
+    <div class="figure reveal">
+      <p class="figure__num" data-count="40" aria-hidden="true">40%</p>
+      <div class="figure__body">
+        <h2 class="figure__title">
+          <span class="sr-only">40% </span>of agentic AI projects will be cancelled by 2027.
+        </h2>
+        <p class="figure__sub">Almost never because of the model.</p>
+      </div>
     </div>
+
+    <ul class="reasons reveal">
+      <li style="--i:0"><span aria-hidden="true">01</span> Nobody owns it</li>
+      <li style="--i:1"><span aria-hidden="true">02</span> The data boundary was never defined</li>
+      <li style="--i:2"><span aria-hidden="true">03</span> Nothing was measured</li>
+    </ul>
 
     <p class="section__close reveal">We settle all three before writing a line of code.</p>
 
     <p class="footnote reveal">
-      Agentic project cancellation and spend forecasts:
       <a href="https://www.gartner.com/en/newsroom/press-releases/2026-05-19-gartner-forecasts-worldwide-ai-spending-to-grow-47-percent-in-2026" rel="noopener">Gartner, May 2026</a>.
-      <!-- TODO before launch: add the direct McKinsey URL for the 23% figure. It is
-           attributed in our market research but the source list has no link, and an
-           unlinked figure is exactly what this section argues against. -->
-      Share of organisations that have scaled an agent deployment: McKinsey.
+      <!-- TODO before launch: direct McKinsey URL for the 23%-scaled figure. -->
     </p>
   </div>
 </section>
 
 <!-- ============================== WHAT WE BUILD ============================== -->
-<section class="section" id="what-we-build">
+<section class="section section--lit" id="build" style="--glow-x: 12%">
   <div class="container">
-    <div class="eyebrow-wrap reveal"><span class="pill pill--eyebrow">What we build</span></div>
-    <h2 class="section__title reveal">The work that eats your team's week.</h2>
-    <p class="section__sub reveal">
-      Six patterns cover most of what we're asked to build. Yours is probably a variation
-      of one of them.
+    <div class="eyebrow-wrap eyebrow-wrap--left reveal"><span class="pill pill--eyebrow">What we build</span></div>
+    <h2 class="section__title section__title--left reveal">The work that eats your team's week.</h2>
+
+    <div class="picker reveal">
+      <div class="picker__list" role="tablist" aria-label="Automation patterns">
+        <button class="pick is-active" role="tab" type="button" data-flow="research"
+                id="pick-research" aria-selected="true" aria-controls="flow-research">
+          <span class="pick__n" aria-hidden="true">01</span>
+          <span class="pick__t">Research &amp; data collection</span>
+          <span class="pick__d">Gathered, verified, citation-linked</span>
+        </button>
+        <button class="pick" role="tab" type="button" data-flow="documents" tabindex="-1"
+                id="pick-documents" aria-selected="false" aria-controls="flow-documents">
+          <span class="pick__n" aria-hidden="true">02</span>
+          <span class="pick__t">Document &amp; report generation</span>
+          <span class="pick__d">Your structure, your voice, your data</span>
+        </button>
+        <button class="pick" role="tab" type="button" data-flow="screening" tabindex="-1"
+                id="pick-screening" aria-selected="false" aria-controls="flow-screening">
+          <span class="pick__n" aria-hidden="true">03</span>
+          <span class="pick__t">Screening &amp; triage</span>
+          <span class="pick__d">Ranked, with a written rationale</span>
+        </button>
+        <button class="pick" role="tab" type="button" data-flow="scheduling" tabindex="-1"
+                id="pick-scheduling" aria-selected="false" aria-controls="flow-scheduling">
+          <span class="pick__n" aria-hidden="true">04</span>
+          <span class="pick__t">Scheduling &amp; coordination</span>
+          <span class="pick__d">Across partner calendars and zones</span>
+        </button>
+        <button class="pick" role="tab" type="button" data-flow="back-office" tabindex="-1"
+                id="pick-back-office" aria-selected="false" aria-controls="flow-back-office">
+          <span class="pick__n" aria-hidden="true">05</span>
+          <span class="pick__t">Back-office operations</span>
+          <span class="pick__d">The month-end nobody wants to own</span>
+        </button>
+        <button class="pick" role="tab" type="button" data-flow="reporting" tabindex="-1"
+                id="pick-reporting" aria-selected="false" aria-controls="flow-reporting">
+          <span class="pick__n" aria-hidden="true">06</span>
+          <span class="pick__t">Client-facing reporting</span>
+          <span class="pick__d">Assembled on a schedule, in your template</span>
+        </button>
+      </div>
+
+      <!-- Grid-stacked: every pane occupies the same cell, so the container is
+           permanently max(all panes) and a swap cannot shift layout. -->
+      <div class="surface">
+        <span class="surface__glow" aria-hidden="true"></span>
+        <span class="surface__cursor" aria-hidden="true"></span>
+        <div class="surface__rise">
+          <div class="stage flow">
+            <div class="stage__pane is-active" role="tabpanel" id="flow-research" aria-labelledby="pick-research">
+              <div class="flow__inner">
+                <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Analyst requests a company profile</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Pull filings, funding, headcount, news</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Cross-check every claim against a second source</span><span class="flow__dots">···</span></div>
+                <div class="flow__card flow__card--hero">
+                  <span class="kbd kbd--action">Action</span>
+                  <span>Return a structured profile with a citation on every line, flagging what it could not verify.</span>
+                  <span class="flow__zap">⚡</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage__pane" role="tabpanel" id="flow-documents" aria-labelledby="pick-documents" inert>
+              <div class="flow__inner">
+                <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Engagement closes, deliverable due</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Assemble the data from your own systems</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Draft into your firm's template and voice</span><span class="flow__dots">···</span></div>
+                <div class="flow__card flow__card--hero">
+                  <span class="kbd kbd--action">Action</span>
+                  <span>Hand the partner a first draft to edit — never a final document to send.</span>
+                  <span class="flow__zap">⚡</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage__pane" role="tabpanel" id="flow-screening" aria-labelledby="pick-screening" inert>
+              <div class="flow__inner">
+                <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Application lands in the ATS</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Score against your own competency rubric</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Write the rationale for the score</span><span class="flow__dots">···</span></div>
+                <div class="flow__card flow__card--hero">
+                  <span class="kbd kbd--trigger">Gate</span>
+                  <span>A human approves every rejection. The system never sends one.</span>
+                  <span class="flow__zap">⚡</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage__pane" role="tabpanel" id="flow-scheduling" aria-labelledby="pick-scheduling" inert>
+              <div class="flow__inner">
+                <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Candidate clears the screen</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Find overlap across partner calendars and zones</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Offer slots, book, send the invite and brief</span><span class="flow__dots">···</span></div>
+                <div class="flow__card flow__card--hero">
+                  <span class="kbd kbd--action">Action</span>
+                  <span>Re-solve the reschedule when someone drops, without a coordinator opening a calendar.</span>
+                  <span class="flow__zap">⚡</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage__pane" role="tabpanel" id="flow-back-office" aria-labelledby="pick-back-office" inert>
+              <div class="flow__inner">
+                <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Invoice arrives by email</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Extract, match to the PO, check the maths</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Code to the right cost centre and project</span><span class="flow__dots">···</span></div>
+                <div class="flow__card flow__card--hero">
+                  <span class="kbd kbd--trigger">Gate</span>
+                  <span>Queue for approval, exceptions first. Payment stays a human decision.</span>
+                  <span class="flow__zap">⚡</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage__pane" role="tabpanel" id="flow-reporting" aria-labelledby="pick-reporting" inert>
+              <div class="flow__inner">
+                <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Monday, 6am</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Pull the week from your systems of record</span><span class="flow__dots">···</span></div>
+                <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Build the client's deck in their template</span><span class="flow__dots">···</span></div>
+                <div class="flow__card flow__card--hero">
+                  <span class="kbd kbd--action">Action</span>
+                  <span>Land it before the stand-up, with the numbers that moved called out.</span>
+                  <span class="flow__zap">⚡</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="section__more reveal">
+      <a class="link-accent" href="what-we-build/">All six, in detail — including hiring →</a>
     </p>
-
-    <div class="cards-6">
-      <a class="arch reveal is-current" data-flow="research" href="what-we-build/#research">
-        <div class="arch__head"><span class="glyph glyph--mono" aria-hidden="true">01</span><b>Research &amp; data collection</b></div>
-        <p>Agents that gather, verify and structure the inputs your analysts currently
-          assemble by hand — market data, company profiles, filings, pricing, hiring
-          signals. Sourced and citation-linked, so the analyst checks the work instead
-          of doing it.</p>
-        <span class="arch__more">See how it works →</span>
-      </a>
-
-      <a class="arch reveal" data-flow="documents" href="what-we-build/#documents">
-        <div class="arch__head"><span class="glyph glyph--mono" aria-hidden="true">02</span><b>Document &amp; report generation</b></div>
-        <p>First drafts of the deliverables you produce on repeat — reports, decks, memos,
-          proposals, SOWs — in your firm's structure and voice, from your own data. Your
-          people edit and sign off.</p>
-        <span class="arch__more">See how it works →</span>
-      </a>
-
-      <a class="arch reveal" data-flow="screening" href="what-we-build/#screening">
-        <div class="arch__head"><span class="glyph glyph--mono" aria-hidden="true">03</span><b>Screening &amp; triage</b></div>
-        <p>High-volume inbound scored against your criteria and ranked with a written
-          rationale for each decision. Résumés, RFPs, leads, tickets, invoices, claims.
-          A human approves every rejection.</p>
-        <span class="arch__more">See how it works →</span>
-      </a>
-
-      <a class="arch reveal" data-flow="scheduling" href="what-we-build/#scheduling">
-        <div class="arch__head"><span class="glyph glyph--mono" aria-hidden="true">04</span><b>Scheduling &amp; coordination</b></div>
-        <p>The back-and-forth that consumes a coordinator's day: interviews across partner
-          calendars and time zones, client meetings, resource allocation, reminders and
-          follow-ups.</p>
-        <span class="arch__more">See how it works →</span>
-      </a>
-
-      <a class="arch reveal" data-flow="back-office" href="what-we-build/#back-office">
-        <div class="arch__head"><span class="glyph glyph--mono" aria-hidden="true">05</span><b>Back-office operations</b></div>
-        <p>Invoice and expense processing, timesheet chasing, vendor onboarding, compliance
-          checklists, reconciliation — the month-end work nobody wants to own.</p>
-        <span class="arch__more">See how it works →</span>
-      </a>
-
-      <a class="arch reveal" data-flow="reporting" href="what-we-build/#reporting">
-        <div class="arch__head"><span class="glyph glyph--mono" aria-hidden="true">06</span><b>Client-facing reporting</b></div>
-        <p>Recurring reports and dashboards assembled from your systems on a schedule, in
-          your template, ready for a partner's review.</p>
-        <span class="arch__more">See how it works →</span>
-      </a>
-    </div>
-
-    <!-- One flow per archetype, all pre-rendered; hovering a card above swaps
-         which is shown. With JS off the first one stays visible. -->
-    <div class="flow reveal" aria-hidden="true">
-      <div class="flow__inner" data-flow-panel="research">
-        <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Analyst requests a company profile</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Pull filings, funding, headcount, news</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Cross-check every claim against a second source</span><span class="flow__dots">···</span></div>
-        <div class="flow__card flow__card--hero">
-          <span class="kbd kbd--action">Action</span>
-          <span>Return a structured profile with a citation on every line, flagging what it could not verify.</span>
-          <span class="flow__zap">⚡</span>
-        </div>
-      </div>
-
-      <div class="flow__inner" data-flow-panel="documents" hidden>
-        <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Engagement closes, deliverable due</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Assemble the data from your own systems</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Draft into your firm's template and voice</span><span class="flow__dots">···</span></div>
-        <div class="flow__card flow__card--hero">
-          <span class="kbd kbd--action">Action</span>
-          <span>Hand the partner a first draft to edit — never a final document to send.</span>
-          <span class="flow__zap">⚡</span>
-        </div>
-      </div>
-
-      <div class="flow__inner" data-flow-panel="screening" hidden>
-        <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Application lands in the ATS</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Score against your own competency rubric</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Write the rationale for the score</span><span class="flow__dots">···</span></div>
-        <div class="flow__card flow__card--hero">
-          <span class="kbd kbd--action">Gate</span>
-          <span>Route to a recruiter. A human approves every rejection — the system never sends one.</span>
-          <span class="flow__zap">⚡</span>
-        </div>
-      </div>
-
-      <div class="flow__inner" data-flow-panel="scheduling" hidden>
-        <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Candidate clears the screen</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Find overlap across partner calendars and zones</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Offer slots, book, send the invite and brief</span><span class="flow__dots">···</span></div>
-        <div class="flow__card flow__card--hero">
-          <span class="kbd kbd--action">Action</span>
-          <span>Chase the reschedule when someone drops, without a coordinator opening a calendar.</span>
-          <span class="flow__zap">⚡</span>
-        </div>
-      </div>
-
-      <div class="flow__inner" data-flow-panel="back-office" hidden>
-        <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Invoice arrives by email</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Extract, match to the PO, check the maths</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Code to the right cost centre and project</span><span class="flow__dots">···</span></div>
-        <div class="flow__card flow__card--hero">
-          <span class="kbd kbd--action">Gate</span>
-          <span>Queue for approval with the exceptions surfaced first. Payment stays a human decision.</span>
-          <span class="flow__zap">⚡</span>
-        </div>
-      </div>
-
-      <div class="flow__inner" data-flow-panel="reporting" hidden>
-        <div class="flow__card"><span class="kbd kbd--trigger">Trigger</span><span>Monday, 6am</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Pull the week from your systems of record</span><span class="flow__dots">···</span></div>
-        <div class="flow__card"><span class="kbd kbd--action">Action</span><span>Build the client's deck in their template</span><span class="flow__dots">···</span></div>
-        <div class="flow__card flow__card--hero">
-          <span class="kbd kbd--action">Action</span>
-          <span>Land it in the partner's inbox before the stand-up, with the numbers that moved called out.</span>
-          <span class="flow__zap">⚡</span>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
 <!-- ============================== HOW WE WORK ============================== -->
-<section class="section" id="how-we-work">
+<section class="section" id="how">
   <div class="container">
-    <div class="eyebrow-wrap reveal"><span class="pill pill--eyebrow">How we work</span></div>
+    <div class="eyebrow-wrap eyebrow-wrap--left reveal"><span class="pill pill--eyebrow">How we work</span></div>
+    <h2 class="section__title section__title--left reveal">Six weeks from pain point to production.</h2>
 
-    <div class="tabs reveal" role="tablist" aria-label="How we work">
-      <button class="tab is-active" role="tab" id="tab-audit" aria-controls="panel-audit" aria-selected="true" data-tab="audit">Audit</button>
-      <button class="tab" role="tab" id="tab-design" aria-controls="panel-design" aria-selected="false" tabindex="-1" data-tab="design">Design</button>
-      <button class="tab" role="tab" id="tab-build" aria-controls="panel-build" aria-selected="false" tabindex="-1" data-tab="build">Build</button>
-      <button class="tab" role="tab" id="tab-run" aria-controls="panel-run" aria-selected="false" tabindex="-1" data-tab="run">Run</button>
+    <div class="tabs tabs--left reveal" role="tablist" aria-label="How we work">
+      <button class="tab is-active" role="tab" id="tab-audit" aria-controls="panel-audit" aria-selected="true" data-tab="audit">01 Audit</button>
+      <button class="tab" role="tab" id="tab-design" aria-controls="panel-design" aria-selected="false" tabindex="-1" data-tab="design">02 Design</button>
+      <button class="tab" role="tab" id="tab-build" aria-controls="panel-build" aria-selected="false" tabindex="-1" data-tab="build">03 Build</button>
+      <button class="tab" role="tab" id="tab-run" aria-controls="panel-run" aria-selected="false" tabindex="-1" data-tab="run">04 Run</button>
     </div>
 
-    <h2 class="section__title section__title--display reveal">
-      Six weeks from pain point to production.
-    </h2>
+    <div class="surface reveal">
+      <span class="surface__glow" aria-hidden="true"></span>
+      <span class="surface__cursor" aria-hidden="true"></span>
+      <div class="surface__rise">
+        <div class="stage">
 
-    <div class="panel-stage reveal">
-      <!-- ---------- Panel: Audit ---------- -->
-      <div class="panel is-active" role="tabpanel" id="panel-audit" aria-labelledby="tab-audit" data-panel="audit">
-       <div class="panel__grid">
-        <div class="panel__copy">
-          <p class="panel__when">Week 0 · Fixed fee, credited if you continue</p>
-          <h3>Audit</h3>
-          <p>We sit with your team and map where the hours actually go. You get a written
-            shortlist of automations ranked by hours saved against effort, and the numbers
-            we'd hold ourselves to. Yours to keep either way.</p>
-        </div>
-        <div class="app">
-          <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
-            <span class="app__crumb">Audit · Week 0 · Where the hours go</span>
-          </div>
-          <div class="app__body app__body--single">
-            <div class="approve">
-              <div class="approve__summary">
-                <div><span>Processes mapped</span><b>14</b></div>
-                <div><span>Hours a week found</span><b>96</b></div>
-                <div><span>Worth automating</span><b class="ok">3</b></div>
+          <div class="stage__pane is-active" role="tabpanel" id="panel-audit" aria-labelledby="tab-audit" data-panel="audit">
+            <p class="phase">Week 0 · fixed fee, credited if you continue</p>
+            <div class="app">
+              <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+                <span class="app__crumb">Audit · where the hours go</span>
               </div>
-              <div class="payrun__scroll">
-              <table class="payrun__table">
-                <thead><tr><th>Process</th><th>Hours / week</th><th>Owner</th><th>Effort</th><th>Rank</th></tr></thead>
-                <tbody>
-                  <tr><td>Company research for pitches</td><td>31</td><td>Analyst pool</td><td>Low</td><td><span class="tagline tagline--ok">1</span></td></tr>
-                  <tr><td>Interview scheduling</td><td>18</td><td>Talent team</td><td>Low</td><td><span class="tagline tagline--ok">2</span></td></tr>
-                  <tr><td>Weekly client reporting</td><td>14</td><td>Engagement leads</td><td>Medium</td><td><span class="tagline tagline--ok">3</span></td></tr>
-                  <tr><td>Timesheet chasing</td><td>9</td><td>Ops</td><td>Medium</td><td><span class="tagline">Phase 2</span></td></tr>
-                </tbody>
-              </table>
-              </div>
-              <div class="approve__foot">
-                <span>Ranked by hours saved against effort to build. Yours to keep either way.</span>
+              <div class="app__body app__body--single">
+                <div class="approve">
+                  <div class="approve__summary">
+                    <div><span>Processes mapped</span><b>14</b></div>
+                    <div><span>Hours a week found</span><b>96</b></div>
+                    <div><span>Worth automating</span><b class="ok">3</b></div>
+                  </div>
+                  <div class="payrun__scroll">
+                  <table class="payrun__table">
+                    <thead><tr><th>Process</th><th>Hrs / wk</th><th>Owner</th><th>Effort</th><th>Rank</th></tr></thead>
+                    <tbody>
+                      <tr><td>Company research for pitches</td><td>31</td><td>Analyst pool</td><td>Low</td><td><span class="tagline tagline--ok">1</span></td></tr>
+                      <tr><td>Interview scheduling</td><td>18</td><td>Talent team</td><td>Low</td><td><span class="tagline tagline--ok">2</span></td></tr>
+                      <tr><td>Weekly client reporting</td><td>14</td><td>Engagement leads</td><td>Medium</td><td><span class="tagline tagline--ok">3</span></td></tr>
+                      <tr><td>Timesheet chasing</td><td>9</td><td>Ops</td><td>Medium</td><td><span class="tagline">Phase 2</span></td></tr>
+                    </tbody>
+                  </table>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-       </div>
-      </div>
 
-      <!-- ---------- Panel: Design ---------- -->
-      <div class="panel" role="tabpanel" id="panel-design" aria-labelledby="tab-design" data-panel="design" hidden>
-       <div class="panel__grid">
-        <div class="panel__copy">
-          <p class="panel__when">Week 1</p>
-          <h3>Design</h3>
-          <p>We pick two or three, agree the success metrics in writing, and settle the data
-            boundary and approval gates with whoever owns security.</p>
-        </div>
-        <div class="app">
-          <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
-            <span class="app__crumb">Design · Week 1 · Scope, metrics, boundary</span>
-          </div>
-          <div class="app__body app__body--single">
-            <div class="connect-grid">
-              <div class="connect-row is-done"><span class="src src--sheets">1</span><div><b>Success metrics agreed, in writing</b><span>Hours per profile · turnaround · rework rate</span></div><span class="tagline tagline--ok">Signed off</span></div>
-              <div class="connect-row is-done"><span class="src src--bio">2</span><div><b>Data boundary settled with your security owner</b><span>Runs in your VPC · your keys · no egress</span></div><span class="tagline tagline--ok">Signed off</span></div>
-              <div class="connect-row is-done"><span class="src src--bank">3</span><div><b>Approval gates named</b><span>Every rejection and every send needs a person</span></div><span class="tagline tagline--ok">Signed off</span></div>
-              <div class="connect-row is-live"><span class="src src--wa">4</span><div><b>Systems of record confirmed</b><span>ATS, CRM, data warehouse, file store</span></div><span class="tagline tagline--live">In review</span></div>
-              <div class="connect-row"><span class="src src--books">5</span><div><b>Change-order process</b><span>Scope changes go in writing, not by favour</span></div><span class="tagline">Drafting</span></div>
+          <div class="stage__pane" role="tabpanel" id="panel-design" aria-labelledby="tab-design" data-panel="design" inert>
+            <p class="phase">Week 1 · scope, metrics, boundary</p>
+            <div class="app">
+              <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+                <span class="app__crumb">Design · agreed before any code</span>
+              </div>
+              <div class="app__body app__body--single">
+                <div class="connect-grid">
+                  <div class="connect-row is-done"><span class="src src--sheets">1</span><div><b>Success metrics, in writing</b><span>Hours per profile · turnaround · rework rate</span></div><span class="tagline tagline--ok">Signed off</span></div>
+                  <div class="connect-row is-done"><span class="src src--bio">2</span><div><b>Data boundary settled</b><span>Your VPC · your keys · no egress</span></div><span class="tagline tagline--ok">Signed off</span></div>
+                  <div class="connect-row is-done"><span class="src src--bank">3</span><div><b>Approval gates named</b><span>Every rejection and every send needs a person</span></div><span class="tagline tagline--ok">Signed off</span></div>
+                  <div class="connect-row is-live"><span class="src src--wa">4</span><div><b>Systems of record confirmed</b><span>ATS, CRM, warehouse, file store</span></div><span class="tagline tagline--live">In review</span></div>
+                  <div class="connect-row"><span class="src src--books">5</span><div><b>Change-order process</b><span>Scope changes in writing, not by favour</span></div><span class="tagline">Drafting</span></div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-       </div>
-      </div>
 
-      <!-- ---------- Panel: Build ---------- -->
-      <div class="panel" role="tabpanel" id="panel-build" aria-labelledby="tab-build" data-panel="build" hidden>
-       <div class="panel__grid">
-        <div class="panel__copy">
-          <p class="panel__when">Weeks 2–5</p>
-          <h3>Build</h3>
-          <p>We build in your environment, not a sandbox. You see working software every
-            week, running on your real data.</p>
-        </div>
-        <div class="app">
-          <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
-            <span class="app__crumb">Build · Week 3 · Weekly demo</span>
-          </div>
-          <div class="app__body app__body--single">
-            <div class="thread">
-              <p class="thread__msg">Can we see it running on the real pitch list, not the sample? The partners will
-                ask whether it holds up on the messy ones.</p>
-
-              <div class="thread__agent">
-                <span class="agent-mark" aria-hidden="true"></span>
-                <div>
-                  <p class="thread__meta"><b>Week 3 demo</b> <span>Running in your VPC</span> <span class="tag-auto">Your data</span></p>
-                  <p class="thread__msg">Pointed it at the live list this morning. Here's where the build stands:</p>
-
-                  <div class="checklist">
-                    <div class="checklist__head"><b>Research agent · 240 companies</b><span>3 of 4 completed</span></div>
-                    <div class="checklist__row is-ok"><i></i>Profiles generated with citations<span>240</span></div>
-                    <div class="checklist__row is-ok"><i></i>Verified against a second source<span>231</span></div>
-                    <div class="checklist__row is-ok"><i></i>Flagged as unverifiable, not guessed<span>9</span></div>
-                    <div class="checklist__row is-pending"><i></i>Analyst spot-check of 20 at random<span class="await">With your team</span></div>
-                    <div class="checklist__actions">
-                      <button class="btn btn--ghost btn--xs" type="button">Send back</button>
-                      <button class="btn btn--light btn--xs" type="button">Accept week 3</button>
+          <div class="stage__pane" role="tabpanel" id="panel-build" aria-labelledby="tab-build" data-panel="build" inert>
+            <p class="phase">Weeks 2–5 · working software every week</p>
+            <div class="app">
+              <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+                <span class="app__crumb">Build · week 3 demo</span>
+              </div>
+              <div class="app__body app__body--single">
+                <div class="thread">
+                  <p class="thread__msg">Can we see it on the real pitch list, not the sample?</p>
+                  <div class="thread__agent">
+                    <span class="agent-mark" aria-hidden="true"></span>
+                    <div>
+                      <p class="thread__meta"><b>Week 3</b> <span>Running in your VPC</span> <span class="tag-auto">Your data</span></p>
+                      <div class="checklist">
+                        <div class="checklist__head"><b>Research agent · 240 companies</b><span>3 of 4</span></div>
+                        <div class="checklist__row is-ok"><i></i>Profiles generated with citations<span>240</span></div>
+                        <div class="checklist__row is-ok"><i></i>Verified against a second source<span>231</span></div>
+                        <div class="checklist__row is-ok"><i></i>Flagged unverifiable, not guessed<span>9</span></div>
+                        <div class="checklist__row is-pending"><i></i>Analyst spot-check of 20<span class="await">With your team</span></div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-       </div>
-      </div>
 
-      <!-- ---------- Panel: Run ---------- -->
-      <div class="panel" role="tabpanel" id="panel-run" aria-labelledby="tab-run" data-panel="run" hidden>
-       <div class="panel__grid">
-        <div class="panel__copy">
-          <p class="panel__when">Week 6 onward</p>
-          <h3>Run, or hand over</h3>
-          <p>We host it, or we deploy it inside your cloud, or you buy the code — your call,
-            and you can change your mind later.</p>
-        </div>
-        <div class="app">
-          <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
-            <span class="app__crumb">Run · Week 6 · Choose how you own it</span>
-          </div>
-          <div class="app__body app__body--single">
-            <div class="connect-grid">
-              <div class="connect-row"><span class="src src--sheets">A</span><div><b>Hosted API</b><span>We run it. You call our endpoints.</span></div><span class="tagline">Available</span></div>
-              <div class="connect-row is-live"><span class="src src--bio">B</span><div><b>Embedded in your environment</b><span>Your cloud, your keys, no data egress</span></div><span class="tagline tagline--live">Selected</span></div>
-              <div class="connect-row"><span class="src src--bank">C</span><div><b>Buy the source code</b><span>Full IP, documented, transferred to you</span></div><span class="tagline">Available</span></div>
-              <div class="connect-row is-done"><span class="src src--wa">D</span><div><b>Buy the code, keep the team</b><span>You own it and our engineers stay on</span></div><span class="tagline tagline--ok">Most chosen</span></div>
-              <div class="connect-row"><span class="src src--books">↺</span><div><b>Switch later</b><span>Changing mode is not a renegotiation</span></div><span class="tagline">Anytime</span></div>
+          <div class="stage__pane" role="tabpanel" id="panel-run" aria-labelledby="tab-run" data-panel="run" inert>
+            <p class="phase">Week 6 onward · your call, and reversible</p>
+            <div class="app">
+              <div class="app__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+                <span class="app__crumb">Run · choose how you own it</span>
+              </div>
+              <div class="app__body app__body--single">
+                <div class="connect-grid">
+                  <div class="connect-row"><span class="src src--sheets">A</span><div><b>Hosted API</b><span>We run it. You call our endpoints.</span></div><span class="tagline">Available</span></div>
+                  <div class="connect-row is-live"><span class="src src--bio">B</span><div><b>Embedded in your environment</b><span>Your cloud, your keys, no egress</span></div><span class="tagline tagline--live">Selected</span></div>
+                  <div class="connect-row"><span class="src src--bank">C</span><div><b>Buy the source code</b><span>Full IP, documented, transferred</span></div><span class="tagline">Available</span></div>
+                  <div class="connect-row is-done"><span class="src src--wa">D</span><div><b>Buy the code, keep the team</b><span>You own it and our engineers stay on</span></div><span class="tagline tagline--ok">Most chosen</span></div>
+                  <div class="connect-row"><span class="src src--books">↺</span><div><b>Switch later</b><span>Not a renegotiation</span></div><span class="tagline">Anytime</span></div>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
-       </div>
       </div>
     </div>
 
@@ -451,348 +448,141 @@
   </div>
 </section>
 
-<!-- ============================== DELIVERY MODES ============================== -->
-<section class="section" id="delivery">
-  <div class="container">
-    <div class="eyebrow-wrap reveal"><span class="pill pill--eyebrow">Delivery</span></div>
-    <h2 class="section__title reveal">Four ways to own it. Switch whenever you like.</h2>
-
-    <div class="modes">
-      <article class="mode reveal">
-        <p class="mode__num">01</p>
-        <h3>Hosted API</h3>
-        <p>We run it. You call our endpoints. We handle uptime, model upgrades and cost
-          tuning. Fastest to go live.</p>
-      </article>
-
-      <article class="mode reveal">
-        <p class="mode__num">02</p>
-        <h3>Embedded in your environment</h3>
-        <p>Deployed inside your cloud or VPC, on your keys. Your data never crosses your
-          own boundary. The usual answer for client-confidential work.</p>
-      </article>
-
-      <article class="mode reveal">
-        <p class="mode__num">03</p>
-        <h3>Buy the source code</h3>
-        <p>Full IP, documented, transferred to you. No runtime dependency on us and no
-          licence to keep paying. Priced separately, agreed up front.</p>
-      </article>
-
-      <article class="mode mode--pick reveal">
-        <span class="badge badge--pick">Most chosen</span>
-        <p class="mode__num">04</p>
-        <h3>Buy the code, keep the team</h3>
-        <p>You own the code and we stay on. Our engineers fix, tune and upgrade what we
-          built — remotely or at your office. Start it, pause it, extend it. Never a
-          condition of the code sale.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ============================== BUY THE CODE ============================== -->
-<section class="section section--band" id="ownership">
+<!-- ============================== OWN THE CODE ============================== -->
+<section class="section section--band section--lit grain" id="own" style="--glow-x: 88%">
   <div class="container band">
     <div class="reveal">
+      <div class="eyebrow-wrap eyebrow-wrap--left"><span class="pill pill--eyebrow">Delivery &amp; ownership</span></div>
       <h2 class="section__title section__title--left">Buy the code. Keep the team.</h2>
       <p class="section__sub section__sub--left">
-        Selling you the source code isn't us walking away — it's you buying the option to
-        leave. Most clients buy the code and keep us anyway, because the engineer who
-        fixes it is the engineer who wrote it.
+        Selling you the source isn't us walking away — it's you buying the option to leave.
+        Most clients buy it and keep us anyway, because the engineer who fixes it is the
+        engineer who wrote it.
       </p>
 
-      <div class="band__points">
-        <div>
-          <h3><span aria-hidden="true">✓</span>The engineer knows the codebase</h3>
-          <p>No discovery phase, no stranger reading your repo on the clock. They open the
-            code they wrote and fix it.</p>
-        </div>
-        <div>
-          <h3><span aria-hidden="true">✓</span>On-site when you need it</h3>
-          <p>A day or two a month, a week around a big change, or whatever cadence suits.
-            If your security policy rules out remote access to production, we come to
-            your office.</p>
-        </div>
-        <div>
-          <h3><span aria-hidden="true">✓</span>Upgrades, not just repairs</h3>
-          <p>New models, cheaper inference, new workflows added as your process matures.
-            The system improves after handover instead of decaying.</p>
-        </div>
-        <div>
-          <h3><span aria-hidden="true">✓</span>Or take it fully in-house</h3>
-          <p>We'll train your team on the codebase and step back. If you hire engineers
-            later, we hand over the reins cleanly. That's a good outcome, not a lost
-            account.</p>
-        </div>
-      </div>
+      <ul class="modes-list">
+        <li style="--i:0"><b>Hosted API</b><span>We run it. Fastest to go live.</span></li>
+        <li style="--i:1"><b>Embedded in your environment</b><span>Your cloud, your keys. Nothing leaves.</span></li>
+        <li style="--i:2"><b>Buy the source code</b><span>Full IP, documented. No licence to keep paying.</span></li>
+        <li style="--i:3" class="is-pick"><b>Buy the code, keep the team</b><span>You own it and we stay on — remote or on-site.</span><em>Most chosen</em></li>
+      </ul>
     </div>
 
     <div class="timeline reveal">
       <ol class="timeline__list">
-        <li class="timeline__step timeline__step--done">
-          <b>Weeks 0–5 · Build</b>
-          <span>Audit, design, then working software every week</span>
-        </li>
-        <li class="timeline__step timeline__step--done">
-          <b>Week 6 · Handover</b>
-          <span>Documented code, in your environment, in your name</span>
-        </li>
-        <li class="timeline__step">
-          <b>Month 2 · Model deprecated upstream</b>
-          <span>Our engineer swaps it out. Same person who built it.</span>
-        </li>
-        <li class="timeline__step timeline__step--onsite">
-          <b>Month 4 · On-site, two days</b>
-          <span>Sitting with your team through a process change</span>
-        </li>
-        <li class="timeline__step">
-          <b>Month 7 · Two new workflows added</b>
-          <span>Extended as the process matured, not rebuilt</span>
-        </li>
-        <li class="timeline__step">
-          <b>Ongoing · Or you take it in-house</b>
-          <span>We train your team and step back, cleanly</span>
-        </li>
+        <li class="timeline__step timeline__step--done"><b>Weeks 0–5 · Build</b><span>Working software every week</span></li>
+        <li class="timeline__step timeline__step--done"><b>Week 6 · Handover</b><span>Documented, in your environment</span></li>
+        <li class="timeline__step"><b>Month 2 · A model deprecates</b><span>The engineer who built it swaps it out</span></li>
+        <li class="timeline__step timeline__step--onsite"><b>Month 4 · On-site, two days</b><span>Sitting with your team through a change</span></li>
+        <li class="timeline__step"><b>Month 7 · Two workflows added</b><span>Extended as the process matured</span></li>
+        <li class="timeline__step"><b>Ongoing · Or take it in-house</b><span>We train your team and step back</span></li>
       </ol>
-      <p class="timeline__note">
-        The line doesn't stop at handover. Ongoing engineering is its own arrangement —
-        start it, pause it, extend it — and never a condition of buying the code.
-      </p>
+      <p class="timeline__note">The line doesn't stop at handover — and ongoing service is never a condition of buying the code.</p>
     </div>
   </div>
 </section>
 
 <!-- ============================== SECURITY ============================== -->
-<section class="section" id="security">
+<section class="section section--lit" id="security" style="--glow-x: 20%">
   <div class="container">
-    <div class="eyebrow-wrap eyebrow-wrap--left reveal"><span class="pill pill--eyebrow">Security &amp; data ownership</span></div>
-    <h2 class="section__title section__title--left reveal">Your data stays inside your boundary. In writing.</h2>
-    <p class="section__sub section__sub--left reveal">
-      You're accountable to your own clients for their data. We build so you can answer
-      their audit, not just ours.
-    </p>
+    <div class="eyebrow-wrap eyebrow-wrap--left reveal"><span class="pill pill--eyebrow">Security</span></div>
+    <h2 class="section__title section__title--left reveal">Your data never leaves your boundary.</h2>
 
     <div class="zones reveal">
       <div class="zone zone--boundary">
-        <p class="zone__eyebrow">Zone 1</p>
+        <p class="zone__eyebrow">Zone 1 · Yours</p>
         <b>Your environment</b>
-        <p>Your cloud or VPC. Your client data, your systems of record, your access
-          policy. Nothing is copied out.</p>
+        <p>Your cloud. Your data, your access policy. We hold no copy.</p>
       </div>
       <div class="zone__link" aria-hidden="true"></div>
       <div class="zone zone--boundary">
-        <p class="zone__eyebrow">Zone 2</p>
+        <p class="zone__eyebrow">Zone 2 · Yours</p>
         <b>The automation, on your keys</b>
-        <p>Runs beside your data, not on our infrastructure. Every action it takes is
-          logged, attributable and reviewable.</p>
+        <p>Runs beside your data. Every action logged and attributable.</p>
       </div>
       <div class="zone__link" aria-hidden="true"></div>
       <div class="zone">
-        <p class="zone__eyebrow">Zone 3</p>
+        <p class="zone__eyebrow">Zone 3 · Third party</p>
         <b>Model API</b>
-        <p>Configured for zero retention and no training on your data. Region-pinned.
-          Receives only what the task needs.</p>
+        <p>Zero retention, no training, region-pinned. Keeps nothing.</p>
       </div>
     </div>
-    <p class="zones__caption reveal">
-      Nothing persists outside your boundary. Every automated action is logged,
-      attributable and reviewable.
+
+    <!-- Promoted from the security subpage. This is the most credible artifact
+         we own and it was buried 2,000 words down. -->
+    <pre class="mono-log reveal" tabindex="0" aria-label="Sample audit log excerpt: an automated score, a gate holding for human review, and the human decision">
+09:14:02Z  actor=automation:screening  action=score.candidate  subject=cand_40219
+           rubric=consulting_v3  score=72/100  region=ap-south-1  retention=none
+09:14:03Z  actor=automation:screening  action=gate.hold
+           gate=human_required:reject  note="no automated rejection is permitted"
+11:02:47Z  actor=user:s.rani@…        action=decision.advance  agreed_with_score=true</pre>
+
+    <p class="section__more reveal">
+      <a class="link-accent" href="security/">The full architecture, controls and exit rights →</a>
     </p>
-
-    <div class="slab reveal">
-      <div class="slab__aside">
-        <p>The controls we build in, per engagement</p>
-      </div>
-      <ul class="chip-grid">
-        <li>Deployed in your cloud or VPC</li>
-        <li>Bring your own API keys</li>
-        <li>Zero data retention with model providers</li>
-        <li>Never used for training</li>
-        <li>Region pinning (India / EU / US)</li>
-        <li>Full audit trail of every action</li>
-        <li>Human approval gates on anything irreversible</li>
-        <li>Role-based access</li>
-        <li>Encrypted in transit and at rest</li>
-        <li>Single sign-on</li>
-        <li>Field-level permissions</li>
-        <li>Data masking</li>
-        <li>Export or delete anytime</li>
-        <li>Source code purchasable</li>
-      </ul>
-    </div>
-
-    <div class="section__cta reveal">
-      <a class="btn btn--ghost" href="security/">Read the security overview <span aria-hidden="true">→</span></a>
-    </div>
   </div>
 </section>
 
-<!-- ============================== WHO WE WORK WITH ============================== -->
-<section class="section" id="who">
-  <div class="container">
-    <div class="eyebrow-wrap eyebrow-wrap--left reveal"><span class="pill pill--eyebrow">Who we work with</span></div>
-    <h2 class="section__title section__title--left reveal">Firms whose product is their people's time.</h2>
-
-    <div class="grid-2x2 reveal">
-      <div class="quad">
-        <h3><span aria-hidden="true">✓</span>Consulting &amp; advisory</h3>
-        <p>Research and deliverable production, so analysts spend their hours on judgement
-          instead of assembly.</p>
-      </div>
-      <div class="quad">
-        <h3><span aria-hidden="true">✓</span>Staffing &amp; executive search</h3>
-        <p>Screening, sourcing and scheduling, where the P&amp;L is literally recruiter
-          hours.</p>
-      </div>
-      <div class="quad">
-        <h3><span aria-hidden="true">✓</span>Accounting, tax &amp; compliance</h3>
-        <p>Document-heavy, rules-based, seasonally overloaded, and rightly paranoid about
-          data.</p>
-      </div>
-      <div class="quad">
-        <h3><span aria-hidden="true">✓</span>Global capability centres</h3>
-        <p>A productivity mandate from the parent and a fiscal year to show numbers in.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================== ENGAGEMENTS ============================== -->
-<!-- There is no pricing page, by decision. This is what goes where a visitor
-     expects one: the full shape of the commercials, with no numbers. -->
+<!-- ============================== COMMERCIALS + FAQ ============================== -->
 <section class="section" id="engagements">
   <div class="container">
-    <div class="eyebrow-wrap eyebrow-wrap--left reveal"><span class="pill pill--eyebrow">Commercials</span></div>
-    <h2 class="section__title section__title--left reveal">How engagements are structured.</h2>
-    <p class="section__sub section__sub--left reveal">
-      Every engagement is scoped from the audit, so the numbers come out of your
-      shortlist rather than a price list. The shape never changes:
-    </p>
-
-    <ul class="spec-list reveal">
-      <li>
-        <b>A fixed-fee audit</b>
-        <p>Priced up front and credited against the build if you proceed. You keep the
-          written shortlist either way.</p>
-      </li>
-      <li>
-        <b>A one-time build fee</b>
-        <p>Fixed and scoped from that shortlist. Changes to scope are a change order in
-          writing, not a conversation at the end.</p>
-      </li>
-      <li>
-        <b>A variable component</b>
-        <p>Tied to actual model usage and passed through transparently, with a monthly cap
-          agreed in advance so it never surprises you.</p>
-      </li>
-      <li>
-        <b>Source code purchase — optional</b>
-        <p>Priced up front, at the start, and never a renegotiation later. You decide
-          whether to exercise it, and when.</p>
-      </li>
-      <li>
-        <b>Ongoing engineering service — optional</b>
-        <p>Priced separately and cancellable. Not bundled into the code purchase and not a
-          condition of it.</p>
-      </li>
-    </ul>
-
-    <h3 class="section__title section__title--left section__title--sub reveal">What we won't do.</h3>
-    <ul class="wont-list reveal">
-      <li>Multi-year lock-ins. If we're worth keeping, you'll keep us.</li>
-      <li>Automate a decision that should stay with a person.</li>
-      <li>Take a project where we can't agree on how to measure the outcome.</li>
-      <li>Hold your code hostage — not at renewal, not at exit, not ever.</li>
-      <li>Claim a certification we don't have.</li>
-    </ul>
-
-    <div class="section__cta reveal">
-      <a class="btn btn--light" href="audit/">Book an audit <span class="btn__dot" aria-hidden="true">→</span></a>
-    </div>
-  </div>
-</section>
-
-<!-- ============================== FAQ ============================== -->
-<section class="section" id="faq">
-  <div class="container">
-    <div class="eyebrow-wrap reveal"><span class="pill pill--eyebrow">Questions</span></div>
-    <h2 class="section__title reveal">The things people ask on the first call</h2>
-
-    <div class="accordion accordion--faq reveal" id="faq-accordion">
-      <div class="acc-item is-open">
-        <button class="acc-item__head" type="button" aria-expanded="true">
-          <span class="acc-item__icon" aria-hidden="true">◷</span>
-          <span class="acc-item__title">We tried an AI pilot and it flopped.</span>
-        </button>
-        <div class="acc-item__body">
-          <p>Gartner expects 40% of agentic projects to be cancelled by 2027, and it's nearly
-            always the same three causes: no owner, no data boundary, no measurable outcome.
-            We settle ownership and measurement before writing a line of code — which is why
-            the audit comes first and why the metrics go in writing.</p>
-        </div>
+    <div class="two-up">
+      <div class="reveal">
+        <div class="eyebrow-wrap eyebrow-wrap--left"><span class="pill pill--eyebrow">Commercials</span></div>
+        <h2 class="section__title section__title--left">No price list. This shape, every time.</h2>
+        <ul class="shape">
+          <li><b>Fixed-fee audit</b><span>Credited against the build if you proceed.</span></li>
+          <li><b>One-time build fee</b><span>Scoped from your shortlist. Changes in writing.</span></li>
+          <li><b>Usage, passed through</b><span>Transparent, with a monthly cap agreed up front.</span></li>
+          <li><b>Source code — optional</b><span>Priced at the start. Never a renegotiation.</span></li>
+          <li><b>Ongoing service — optional</b><span>Separate and cancellable.</span></li>
+        </ul>
+        <p class="who reveal">
+          Built for <b>consulting</b>, <b>staffing</b>, <b>accounting</b> and <b>global capability centres</b> —
+          firms whose product is their people's time.
+        </p>
       </div>
 
-      <div class="acc-item">
-        <button class="acc-item__head" type="button" aria-expanded="false">
-          <span class="acc-item__icon" aria-hidden="true">◈</span>
-          <span class="acc-item__title">Our client data is confidential — where does it go?</span>
-        </button>
-        <div class="acc-item__body">
-          <p>Into your own environment and nowhere else. We deploy inside your cloud or VPC on
-            your keys, so your data never reaches us. Model providers are configured for zero
-            retention with no training on your data, region-pinned to India, the EU or the US
-            as your client contracts require. Every automated action is logged and
-            attributable. The architecture is on the <a class="link-accent" href="security/">security page</a>.</p>
+      <div class="accordion accordion--faq reveal" id="faq">
+        <div class="acc-item is-open">
+          <button class="acc-item__head" type="button" aria-expanded="true">
+            <span class="acc-item__icon" aria-hidden="true">◈</span>
+            <span class="acc-item__title">Where does our client data go?</span>
+          </button>
+          <div class="acc-item__body">
+            <p>Into your own environment and nowhere else. Zero retention with model
+              providers, no training on your data, region-pinned.</p>
+          </div>
         </div>
-      </div>
-
-      <div class="acc-item">
-        <button class="acc-item__head" type="button" aria-expanded="false">
-          <span class="acc-item__icon" aria-hidden="true">◎</span>
-          <span class="acc-item__title">If we buy the code, are we then on our own?</span>
-        </button>
-        <div class="acc-item__body">
-          <p>No. You own it and you keep the team. Our engineers stay available to fix, tune
-            and upgrade it — remotely or sitting in your office — for as long as you want us.
-            Start it, pause it, extend it. It's your call, not a condition of the sale.</p>
+        <div class="acc-item">
+          <button class="acc-item__head" type="button" aria-expanded="false">
+            <span class="acc-item__icon" aria-hidden="true">◎</span>
+            <span class="acc-item__title">If we buy the code, are we on our own?</span>
+          </button>
+          <div class="acc-item__body">
+            <p>No. You own it and keep the team — remote or in your office, for as long as
+              you want us. Start it, pause it, extend it.</p>
+          </div>
         </div>
-      </div>
-
-      <div class="acc-item">
-        <button class="acc-item__head" type="button" aria-expanded="false">
-          <span class="acc-item__icon" aria-hidden="true">⚡</span>
-          <span class="acc-item__title">What if you disappear?</span>
-        </button>
-        <div class="acc-item__body">
-          <p>That's what the code purchase is for, and it's written into the contract rather
-            than promised on a call — priced up front, with a documented handover. If we
-            deployed inside your environment, the system keeps running whether we exist or
-            not. You're never hostage to us.</p>
+        <div class="acc-item">
+          <button class="acc-item__head" type="button" aria-expanded="false">
+            <span class="acc-item__icon" aria-hidden="true">◇</span>
+            <span class="acc-item__title">Why not Accenture or Deloitte?</span>
+          </button>
+          <div class="acc-item__body">
+            <p>Different product. Nine to eighteen months and a multi-million budget, and
+              you own nothing. We ship in six weeks and you can own the code.</p>
+          </div>
         </div>
-      </div>
-
-      <div class="acc-item">
-        <button class="acc-item__head" type="button" aria-expanded="false">
-          <span class="acc-item__icon" aria-hidden="true">◇</span>
-          <span class="acc-item__title">Why not Accenture or Deloitte?</span>
-        </button>
-        <div class="acc-item__body">
-          <p>Different product. They'll take nine to eighteen months and a multi-million
-            budget, and you'll own nothing at the end of it. We ship in six weeks and you can
-            own the code. For a firm-wide transformation programme, call them. For three
-            automations that give your analysts their week back, call us.</p>
-        </div>
-      </div>
-
-      <div class="acc-item">
-        <button class="acc-item__head" type="button" aria-expanded="false">
-          <span class="acc-item__icon" aria-hidden="true">◉</span>
-          <span class="acc-item__title">We don't have anyone technical to manage this.</span>
-        </button>
-        <div class="acc-item__body">
-          <p>That's the assumption we're built on. No engineer on your side is required — at
-            any stage, including after handover.</p>
+        <div class="acc-item">
+          <button class="acc-item__head" type="button" aria-expanded="false">
+            <span class="acc-item__icon" aria-hidden="true">◉</span>
+            <span class="acc-item__title">We have nobody technical.</span>
+          </button>
+          <div class="acc-item__body">
+            <p>That's the assumption we're built on. No engineer on your side is required
+              at any stage, including after handover.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -800,13 +590,12 @@
 </section>
 
 <!-- ============================== FINAL CTA ============================== -->
-<section class="section section--cta" id="audit-cta">
+<section class="section section--cta section--lit grain" id="audit-cta" style="--glow-x: 50%">
   <div class="container">
     <h2 class="section__title reveal">Start with the audit.</h2>
     <p class="section__sub reveal">
-      Forty-five minutes with your team, then a written shortlist of what's worth
-      automating in your firm — ranked by hours saved against effort to build. You keep
-      it either way.
+      Forty-five minutes, then a written shortlist of what's worth automating — ranked by
+      hours saved against effort. You keep it either way.
     </p>
     <div class="section__cta reveal">
       <a class="btn btn--light btn--lg" href="audit/">
@@ -826,8 +615,7 @@
         <span class="brand__mark" aria-hidden="true"></span>
         <span class="brand__name">Wheelz<span class="brand__name-accent">365</span></span>
       </a>
-      <p>The AI engineering team for firms that don't have one. We design it, build it in
-        six weeks, and run it inside your security boundary.</p>
+      <p>The AI engineering team for firms that don't have one.</p>
       <div class="footer__social">
         <!-- TODO before launch: real LinkedIn company URL -->
         <a href="mailto:hello@wheelz365.com" aria-label="Email us"><span aria-hidden="true">@</span></a>
@@ -837,31 +625,29 @@
     <nav class="footer__col" aria-label="What we do">
       <p class="footer__h">What we do</p>
       <a href="what-we-build/">What we build</a>
-      <a href="what-we-build/#hiring">HR &amp; hiring automation</a>
-      <a href="#how-we-work">How we work</a>
-      <a href="#delivery">Delivery modes</a>
+      <a href="what-we-build/#hiring">HR &amp; hiring</a>
+      <a href="#how">How we work</a>
+      <a href="#own">Delivery modes</a>
     </nav>
 
     <nav class="footer__col" aria-label="Trust">
       <p class="footer__h">Trust</p>
-      <a href="security/">Security &amp; data ownership</a>
-      <a href="#ownership">Buy the code. Keep the team.</a>
-      <a href="#engagements">How engagements are structured</a>
+      <a href="security/">Security</a>
+      <a href="#own">Own the code</a>
+      <a href="#engagements">Commercials</a>
       <a href="#faq">Questions</a>
     </nav>
 
     <nav class="footer__col" aria-label="Get started">
       <p class="footer__h">Get started</p>
       <a href="audit/">Book an audit</a>
-      <a href="#who">Who we work with</a>
       <a href="mailto:hello@wheelz365.com">hello@wheelz365.com</a>
     </nav>
   </div>
 
   <div class="container footer__base">
     <p>© <span id="year">2026</span> Wheelz365. All rights reserved.</p>
-    <!-- TODO before launch: registered entity name + city. Enterprise buyers look
-         for it, so add the real one — don't invent a placeholder. -->
+    <!-- TODO before launch: registered entity name + city -->
     <p>hello@wheelz365.com</p>
   </div>
 </footer>

@@ -70,6 +70,11 @@
   --sheen-bot: inset 0 -1px 0 rgba(0, 0, 0, 0.5);
 
   --glass-fill: rgba(13, 13, 16, 0.72);
+
+  /* numOctaves=1 (4 is ~4x the raster cost and indistinguishable at 5%),
+     stitchTiles so seams don't show, saturate 0 because raw feTurbulence is
+     coloured and reads as chroma dirt on this palette. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.55'/%3E%3C/svg%3E");
 }
 
 /* inherits:false is load-bearing — an inherited custom property invalidates the
@@ -525,7 +530,7 @@ table { border-collapse: collapse; width: 100%; }
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: linear-gradient(180deg, #101015, #0a0a0d);
-  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--lift-2), var(--sheen-top);
   overflow: hidden;
   overflow: clip;
   max-width: 1080px;
@@ -1493,6 +1498,442 @@ table { border-collapse: collapse; width: 100%; }
               transform 0.45s var(--ease-out) calc(var(--i, 0) * 55ms);
 }
 
+/* ==========================================================================
+   DEPTH SYSTEM
+   Layers, from back to front:
+     0  page background            free
+     1  hero canvas + section glow  canvas is its own GPU layer; glows are
+                                    static gradients, rastered once
+     2  scrim                       static, promoted once
+     3  content surfaces            fake glass only — never backdrop-filter
+     4  lift (floating surface)     transform + opacity only
+     40 grain                       one static tiled layer
+     60 nav                         the only backdrop-filter on the site
+   ========================================================================== */
+
+/* ---- ambient section glow ------------------------------------------------
+   A pre-baked radial gradient, never filter: blur(). Same construction
+   .page-head::before already uses. Costs one raster, then composites free. */
+.section--lit::before {
+  content: '';
+  position: absolute; inset: 0;
+  z-index: var(--z-atmos);
+  pointer-events: none;
+  background:
+    radial-gradient(120% 70% at var(--glow-x, 18%) -10%, rgba(124, 134, 255, 0.13), transparent 62%),
+    radial-gradient(90% 60% at var(--glow-x2, 86%) 6%, rgba(23, 184, 119, 0.07), transparent 58%);
+}
+.section--lit { overflow: clip; }
+
+/* ---- the glass recipe ----------------------------------------------------
+   Replaces backdrop-filter everywhere except .nav. Three cheap ingredients do
+   all the visible work: a layered fill, a 1px inset top highlight, a hairline
+   border. */
+.glass {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    var(--glass-fill);
+  border: 1px solid var(--line);
+  box-shadow: var(--sheen-top), var(--sheen-bot), var(--lift-1);
+}
+
+/* ---- floating product surface -------------------------------------------- */
+.surface { position: relative; min-width: 0; }
+
+/* The glow beneath. Pre-baked gradient — a filter: blur() on a full-width
+   element sitting over a running canvas is the single most expensive thing
+   that could go on this page. */
+.surface__glow {
+  position: absolute;
+  inset: 12% -6% -14%;
+  z-index: -2;
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: 0.55;
+  background:
+    radial-gradient(60% 50% at 50% 60%, rgba(124, 134, 255, 0.30), transparent 70%),
+    radial-gradient(85% 60% at 50% 72%, rgba(0, 0, 0, 0.85), transparent 72%);
+  transition: opacity 0.4s var(--ease-out);
+}
+
+/* Cursor light: a FIXED-SIZE gradient moved by transform. Re-declaring a
+   gradient's position per frame repaints the element; translating a static one
+   stays on the compositor. */
+.surface__cursor {
+  position: absolute; top: 0; left: 0;
+  z-index: -1;
+  width: 460px; height: 460px;
+  margin: -230px 0 0 -230px;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(150, 165, 255, 0.22), transparent 66%);
+  transform: translate3d(var(--mx, 50%), var(--my, 50%), 0);
+  transition: opacity 0.3s var(--ease-out);
+}
+
+/* .surface__rise owns the scroll-driven settle; .app owns the pointer tilt.
+   They must be separate elements — a running animation on transform beats a
+   declaration on the same property, so sharing one element would kill the tilt
+   whenever the settle animation was in range. */
+.surface__rise { min-width: 0; }
+
+/* ---- grain ---------------------------------------------------------------
+   Scoped, not global. Grain lifts the black point, which is functionally the
+   same as lowering --fg-dim, and the token comment says not to do that without
+   re-measuring. So it only lands on regions whose smallest text is bright and
+   shadowed — never on footnotes or field notes.
+   No mix-blend-mode: a blend group would force the overlay and the canvas into
+   one paint, turning a free composite into a full repaint every frame. */
+.grain { position: relative; }
+.grain::after {
+  content: '';
+  position: absolute; inset: 0;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: var(--grain);
+  background-size: 160px 160px;   /* pin it, or it rasters at viewport size */
+}
+
+/* ---- nav: progress, active state, ⌘K affordance -------------------------- */
+.nav__progress {
+  position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent-solid), rgba(23, 184, 119, 0.9));
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+.nav.is-stuck .nav__progress { opacity: 1; }
+
+/* Chrome runs this on the compositor, off the main thread the canvas is using.
+   Everything else gets the rAF fallback in main.js. */
+@supports (animation-timeline: scroll()) {
+  .nav__progress {
+    transform: scaleX(0);
+    animation: nav-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+  @keyframes nav-progress {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+}
+
+.nav__links a {
+  position: relative;
+  padding-block: 4px;
+}
+.nav__links a.is-current { color: var(--fg); }
+.nav__links a.is-current::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: -2px;
+  height: 1px;
+  background: var(--accent-solid);
+}
+
+.kbd-hint {
+  display: none;
+  align-items: center; gap: 1px;
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  font-size: 0.75rem;
+  color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.kbd-hint:hover { color: var(--fg); border-color: var(--line-strong); }
+.kbd-hint__k { font-size: 0.8125rem; }
+@media (min-width: 1024px) { .kbd-hint { display: inline-flex; } }
+
+/* ---- overlay menu -------------------------------------------------------- */
+.overlay[hidden] { display: none; }
+.overlay {
+  position: fixed; inset: 0; z-index: 80;
+  display: grid; align-content: center;
+  background: rgba(4, 4, 6, 0.96);
+  opacity: 0;
+  transition: opacity 0.28s var(--ease-out);
+}
+.overlay.is-open { opacity: 1; }
+.overlay__inner { display: grid; gap: 40px; }
+.overlay__nav { display: grid; gap: 2px; }
+.overlay__nav a {
+  font-size: clamp(1.75rem, 7vw, 3rem);
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  color: var(--fg-muted);
+  padding-block: 8px;
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: color 0.18s var(--ease), opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+.overlay__nav a:hover { color: var(--fg); }
+.overlay.is-open .overlay__nav a,
+.overlay.is-open .overlay__cta {
+  opacity: 1; transform: none;
+  transition-delay: calc(var(--i, 0) * 45ms);
+}
+.overlay__cta {
+  justify-self: start;
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+
+/* hamburger morphs to an X — it never used to */
+.nav__toggle span { transition: transform 0.28s var(--ease-out), opacity 0.2s var(--ease); }
+.nav__toggle[aria-expanded="true"] span:first-child { transform: translateY(3.25px) rotate(45deg); }
+.nav__toggle[aria-expanded="true"] span:last-child { transform: translateY(-3.25px) rotate(-45deg); }
+
+/* ---- ⌘K palette ---------------------------------------------------------- */
+.palette[hidden] { display: none; }
+.palette {
+  position: fixed; inset: 0; z-index: 90;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  padding: clamp(60px, 12vh, 140px) 20px 20px;
+}
+.palette__scrim {
+  position: absolute; inset: 0;
+  background: rgba(3, 3, 5, 0.72);
+  opacity: 0;
+  transition: opacity 0.22s var(--ease);
+}
+.palette.is-open .palette__scrim { opacity: 1; }
+.palette__box {
+  position: relative;
+  width: 100%; max-width: 540px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--lift-3);
+  overflow: hidden;
+  opacity: 0;
+  transform: translate3d(0, -10px, 0) scale(0.985);
+  transition: opacity 0.22s var(--ease-out), transform 0.22s var(--ease-out);
+}
+.palette.is-open .palette__box { opacity: 1; transform: none; }
+.palette__input {
+  width: 100%;
+  padding: 18px 20px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  font-size: 1rem;
+  color: var(--fg);
+}
+.palette__input::placeholder { color: var(--fg-dim); }
+.palette__input:focus { outline: none; }
+.palette__list {
+  max-height: min(52vh, 380px);
+  overflow-y: auto;
+  padding: 6px;
+}
+.palette__item {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+.palette__item em {
+  font-style: normal; font-size: 0.75rem; color: var(--fg-dim);
+  text-align: right; flex: none;
+}
+.palette__item.is-sel { background: rgba(124, 134, 255, 0.16); }
+.palette__item.is-sel em { color: var(--fg-muted); }
+.palette__foot {
+  display: flex; gap: 16px;
+  padding: 11px 20px;
+  border-top: 1px solid var(--line);
+  font-size: 0.6875rem; color: var(--fg-dim);
+}
+.palette__foot span { display: flex; align-items: center; gap: 5px; }
+.palette__foot kbd {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+/* ---- capability bar (overlaps the hero) ---------------------------------- */
+.capbar {
+  position: relative;
+  z-index: 3;
+  margin-top: -34px;
+  border-radius: var(--radius-lg);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px 0;
+  padding: 6px;
+  font-size: 0.875rem;
+}
+@media (min-width: 640px) { .capbar { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .capbar { grid-template-columns: repeat(4, 1fr); } }
+.capbar li {
+  display: flex; align-items: center; gap: 9px;
+  padding: 13px 16px;
+  color: var(--fg-muted);
+}
+.capbar__tick {
+  flex: none;
+  width: 15px; height: 15px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(52, 199, 89, 0.14); color: var(--success);
+  font-size: 0.5rem; font-weight: 700;
+}
+
+/* ---- the big figure ------------------------------------------------------ */
+.figure { display: grid; gap: 18px; align-items: start; }
+@media (min-width: 800px) { .figure { grid-template-columns: auto 1fr; gap: 40px; } }
+.figure__num {
+  font-size: clamp(4.5rem, 13vw, 9.5rem);
+  line-height: 0.84;
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  background: linear-gradient(165deg, #fff 8%, rgba(124, 134, 255, 0.85) 62%, rgba(124, 134, 255, 0.28) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.figure__title {
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  line-height: 1.16; font-weight: 500; letter-spacing: -0.028em;
+  max-width: 20ch;
+}
+.figure__sub { margin-top: 12px; color: var(--fg-muted); font-size: 1rem; }
+
+.reasons {
+  margin-top: clamp(40px, 5vw, 64px);
+  display: grid; gap: 0;
+  border-top: 1px solid var(--line);
+}
+.reasons li {
+  display: flex; align-items: baseline; gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: clamp(1.0625rem, 1.7vw, 1.375rem);
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+.reasons span {
+  flex: none;
+  font-size: 0.6875rem; letter-spacing: 0.1em;
+  color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+}
+/* this section is left-aligned, so its closing line must be too */
+#problem .section__close { text-align: left; margin-inline: 0; }
+#problem .footnote { margin-top: 18px; }
+
+/* ---- picker (archetype selector + surface) -------------------------------- */
+.picker { margin-top: 44px; display: grid; gap: 26px; }
+@media (min-width: 1020px) {
+  .picker { grid-template-columns: 340px 1fr; gap: 44px; align-items: center; }
+  /* the surface reads as floating rather than stranded when it is optically
+     centred against the six-item list */
+  .picker .surface { align-self: center; }
+}
+.picker__list { display: grid; gap: 2px; }
+
+.pick {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 12px;
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  color: var(--fg-muted);
+  transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease),
+              color 0.2s var(--ease);
+}
+.pick:hover { background: rgba(255, 255, 255, 0.035); color: var(--fg); }
+.pick.is-active {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--line-strong);
+  color: var(--fg);
+}
+.pick__n {
+  grid-row: 1 / span 2;
+  font-size: 0.6875rem; letter-spacing: 0.08em;
+  color: var(--fg-dim); padding-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.pick.is-active .pick__n { color: var(--accent-solid); }
+.pick__t { font-size: 0.9375rem; font-weight: 500; letter-spacing: -0.01em; }
+.pick__d { font-size: 0.8125rem; color: var(--fg-dim); }
+
+/* ---- the stage: zero-shift pane stack ------------------------------------- */
+/* Every pane occupies the same grid cell, so the container height is
+   permanently max(all panes) at every viewport and a swap cannot shift layout.
+   This replaces a hand-tuned min-height:460px that only held at one size. */
+.stage { display: grid; }
+.stage__pane {
+  grid-area: 1 / 1;
+  min-width: 0;
+  opacity: 0;
+  visibility: hidden;   /* not display:none — that drops it out of grid sizing */
+  transform: translate3d(0, 8px, 0);
+  transition: opacity 0.16s var(--ease),
+              transform 0.16s var(--ease),
+              visibility 0s linear 0.16s;
+}
+.stage__pane.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.3s var(--ease-out) 0.07s,
+              transform 0.3s var(--ease-out) 0.07s,
+              visibility 0s;
+}
+
+.phase {
+  margin-bottom: 14px;
+  font-size: 0.6875rem; letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--fg-dim);
+}
+
+/* ---- delivery modes as a list, not cards ---------------------------------- */
+.modes-list { margin-top: 34px; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.modes-list li {
+  position: relative;
+  display: grid; gap: 3px;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--line);
+}
+.modes-list b { font-size: 0.9375rem; font-weight: 500; }
+.modes-list span { font-size: 0.875rem; color: var(--fg-muted); }
+.modes-list em {
+  position: absolute; top: 16px; right: 0;
+  font-style: normal; font-size: 0.625rem; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-solid);
+}
+.modes-list .is-pick b { color: var(--fg); }
+
+/* ---- commercials + faq, side by side -------------------------------------- */
+.two-up { display: grid; gap: 52px; align-items: start; }
+@media (min-width: 1000px) { .two-up { grid-template-columns: 1fr 1fr; gap: 72px; } }
+.shape { margin-top: 30px; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.shape li {
+  display: grid; gap: 2px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+.shape b { font-size: 0.9375rem; font-weight: 500; }
+.shape span { font-size: 0.875rem; color: var(--fg-muted); }
+.who { margin-top: 26px; font-size: 0.9375rem; color: var(--fg-muted); line-height: 1.6; }
+.who b { color: var(--fg); font-weight: 500; }
+
+.section__more { margin-top: 30px; font-size: 0.9375rem; }
+.accordion--faq { margin-top: 0; max-width: none; }
+
 /* ------------------------------ hero entrance ---------------------------- */
 /* NEVER animate opacity above the fold. The <h1> is the LCP element, and Chrome
    does not count a zero-opacity element as painted — putting .reveal on it cost
@@ -1507,11 +1948,81 @@ table { border-collapse: collapse; width: 100%; }
   to   { transform: none; }
 }
 
+/* ==========================================================================
+   MOTION TIER 3 — scroll-driven, Chrome/Edge only, purely additive
+   Transform/opacity on a view() timeline is composited off the main thread,
+   which is the only way to get continuous motion that does not contend with
+   the canvas. Safari/Firefox keep the discrete IO reveals and lose nothing
+   they can perceive as missing. A JS parallax fallback would cost exactly the
+   main-thread frames this architecture exists to protect, so there isn't one.
+   ========================================================================== */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    /* the ambient glow drifts slower than the content above it */
+    .section--lit::before {
+      animation: atmos linear both;
+      animation-timeline: view(block);
+      animation-range: cover;
+      will-change: transform;     /* one element per lit section, transform-only */
+    }
+    @keyframes atmos {
+      from { transform: translate3d(0, -7%, 0); }
+      to   { transform: translate3d(0, 7%, 0); }
+    }
+
+    /* the product surface settles as it enters. Desktop only — on a phone the
+       surface fills the viewport and there is no depth to read. */
+    @media (min-width: 900px) {
+      .surface__rise {
+        animation: surface-settle linear both;
+        animation-timeline: view();
+        animation-range: entry 10% cover 42%;
+      }
+      @keyframes surface-settle {
+        from { transform: translate3d(0, 34px, 0) scale(0.975); }
+        to   { transform: none; }
+      }
+      .surface__glow {
+        animation: glow-settle linear both;
+        animation-timeline: view();
+        animation-range: entry 10% cover 42%;
+      }
+      @keyframes glow-settle {
+        from { opacity: 0.12; transform: translate3d(0, -18px, 0) scale(0.9); }
+        to   { opacity: 0.55; transform: none; }
+      }
+    }
+  }
+}
+
+/* ---- pointer tilt (gated to [data-depth="full"] by the inline tier script) -- */
+.app {
+  transform: perspective(1400px)
+             rotateX(var(--rx, 0deg))
+             rotateY(var(--ry, 0deg))
+             translate3d(0, var(--lz, 0px), 0);
+  transition: transform 0.45s var(--ease-out), box-shadow 0.45s var(--ease-out);
+}
+/* perspective() as a transform FUNCTION, not a property on an ancestor: if an
+   ancestor owned it, .surface__rise's own transform would consume it and the
+   tilt would render flat. */
+.surface.is-tracking .app { transition: box-shadow 0.45s var(--ease-out); }
+.surface.is-tracking .surface__glow { opacity: 0.85; }
+:root[data-depth="flat"] .surface__cursor { display: none; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
   .js .hero-in { animation: none !important; }
   .panel.is-active { animation: none; }
+  /* motion off, depth ON — shadows, glows and glass are not motion */
+  .app { transform: none !important; }
+  .surface__rise { animation: none !important; transform: none !important; }
+  .surface__cursor { display: none; }
+  .surface__glow { animation: none !important; opacity: 0.55 !important; transform: none !important; }
+  .section--lit::before { animation: none !important; transform: none !important; }
+  .stage__pane, .stage__pane.is-active { transition: none !important; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
