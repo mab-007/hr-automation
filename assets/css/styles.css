@@ -1159,7 +1159,9 @@ table { border-collapse: collapse; width: 100%; }
 
 /* ------------------------------ timeline -------------------------------- */
 /* HTML + CSS rather than inline SVG: text in an SVG can't reflow, and this has
-   to read at 390px. Vertical on mobile, horizontal from 700px.
+   to read at 390px. Vertical at every width — an earlier version of this comment
+   claimed "horizontal from 700px", but there was never such a media query, and
+   the vertical form reads better beside the copy anyway.
    The one thing it must communicate: the line does not stop at handover. */
 .timeline {
   border: 1px solid var(--line);
