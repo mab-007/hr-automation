@@ -1,6 +1,10 @@
 import { useEffect, useRef } from "react"
 import "@/styles/portfolio-footer.css"
 
+function LinkArrow() {
+  return <svg className="footer-link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" /></svg>
+}
+
 const linkedin = "https://www.linkedin.com/in/amarnath-bhakat-158723170/"
 const aryanLinkedin = "https://www.linkedin.com/in/aryan-kumar-84546120a/"
 const email = "mailto:works.amarnath@gmail.com"
@@ -33,9 +37,9 @@ export default function PortfolioFooter({ theme = "dark" }: { theme?: "dark" | "
       <section className="portfolio-contact" aria-labelledby="contact-title">
         <div className="portfolio-contact__head"><p className="footer-label">Got something in mind?</p><p>A new platform. A better experience.<br />Something that should exist.</p></div>
         <a className="portfolio-contact__cta" href={`${email}?subject=Let%E2%80%99s%20build%20a%20product`} aria-label="Email Amarnath about your project">
-          <h2 id="contact-title">YOUR MOVE.</h2><span className="footer-arrow" aria-hidden="true">↗</span>
+          <h2 id="contact-title">YOUR MOVE.</h2><span className="footer-arrow" aria-hidden="true"><LinkArrow /></span>
         </a>
-        <div className="portfolio-contact__bottom"><address className="footer-contact-details"><a href={email}>works.amarnath@gmail.com <span aria-hidden="true">↗</span></a><a href="mailto:aryankumar0310@gmail.com">aryankumar0310@gmail.com <span aria-hidden="true">↗</span></a></address><div className="footer-contact-right"><a className="footer-phone" href="https://wa.me/916203325207" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp at +91 6203325207"><strong>+91 6203325207</strong> <span aria-hidden="true">↗</span></a><div className="footer-social-links"><a href={linkedin} target="_blank" rel="noopener noreferrer">Amarnath Bhakat ↗</a><a href={aryanLinkedin} target="_blank" rel="noopener noreferrer">Aryan Kumar ↗</a><a href="#top">Back to top ↑</a></div></div></div>
+        <div className="portfolio-contact__bottom"><address className="footer-contact-details"><a href={email}>works.amarnath@gmail.com <LinkArrow /></a><a href="mailto:aryankumar0310@gmail.com">aryankumar0310@gmail.com <LinkArrow /></a></address><div className="footer-contact-right"><a className="footer-phone" href="https://wa.me/916203325207" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp at +91 6203325207"><strong>+91 6203325207</strong> <LinkArrow /></a><div className="footer-social-links"><a href={linkedin} target="_blank" rel="noopener noreferrer">Amarnath Bhakat <LinkArrow /></a><a href={aryanLinkedin} target="_blank" rel="noopener noreferrer">Aryan Kumar <LinkArrow /></a><a href="#top">Back to top <svg className="footer-link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 20V4m-6 6 6-6 6 6" /></svg></a></div></div></div>
       </section>
       </footer>
     </div>

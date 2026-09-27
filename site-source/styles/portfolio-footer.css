@@ -85,3 +85,9 @@
  .footer-social-links a{display:inline-flex;align-items:center;min-height:44px}
  .footer-contact-right .footer-phone{min-height:44px;display:inline-flex;align-items:center}
 }
+
+/* SVG arrows avoid iOS emoji substitution. */
+.footer-link-arrow{display:inline-block;width:1em;height:1em;vertical-align:-.12em;flex-shrink:0}
+.footer-arrow .footer-link-arrow{width:58%;height:58%;vertical-align:baseline}
+.footer-social-links .footer-link-arrow{margin-left:.4em}
+.footer-phone .footer-link-arrow{margin-left:.2em}
