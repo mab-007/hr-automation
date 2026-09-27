@@ -1,0 +1,9 @@
+.wheel-intro{position:relative;height:450svh;background:#f2f1ee}
+.wheel-intro__stage{position:sticky;top:0;height:100svh;overflow:hidden}
+.wheel-intro__hint{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:#9E2A2B;font:10px ui-monospace,monospace;letter-spacing:.16em;pointer-events:none}
+.wheel-intro__copy{position:absolute;top:50%;left:48%;right:5%;color:#9E2A2B;pointer-events:none}
+.wheel-intro__label{margin:0 0 48px;font:600 11px/1.5 Arial,sans-serif;letter-spacing:.2em}
+.wheel-intro__copy h1{color:#171717;margin:0;font:600 clamp(36px,6.4vw,112px)/1.02 Arial,Helvetica,sans-serif;letter-spacing:-.055em}
+.wheel-intro__statement{margin:32px 0 0;font:500 clamp(16px,2vw,30px)/1.4 Arial,sans-serif;letter-spacing:-.025em}
+@media(max-width:640px){.wheel-intro__copy{left:46%;right:3%}.wheel-intro__copy h1{font-size:clamp(27px,7vw,45px)}.wheel-intro__label{font-size:9px;margin-bottom:26px}.wheel-intro__statement{font-size:15px;margin-top:22px}.wheel-intro__hint{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.wheel-intro{height:100svh}}

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 856 540" role="img" aria-label="Mana Visa debit card, front">
+  <title>Mana debit card — front</title>
+  <desc>Front of the Mana Visa debit card. Deep navy body with a subtle woven texture, the Mana twin-sails mark and wordmark in white and coral, EMV chip, contactless symbol, cardholder name, DEBIT label, and Visa mark.</desc>
+  <defs>
+    <clipPath id="cc-front"><rect x="0" y="0" width="856" height="540" rx="36"></rect></clipPath>
+    <linearGradient id="cardgrad-f" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A1228"></stop>
+      <stop offset="0.55" stop-color="#101d3f"></stop>
+      <stop offset="1" stop-color="#1a2a52"></stop>
+    </linearGradient>
+    <radialGradient id="glow-f" cx="0.82" cy="0.12" r="0.6">
+      <stop offset="0" stop-color="#E85D2C" stop-opacity="0.32"></stop>
+      <stop offset="1" stop-color="#E85D2C" stop-opacity="0"></stop>
+    </radialGradient>
+    <linearGradient id="chip-f" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E6C36A"></stop>
+      <stop offset="1" stop-color="#B68C3A"></stop>
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#cc-front)">
+    <rect x="0" y="0" width="856" height="540" fill="url(#cardgrad-f)"></rect>
+    <rect x="0" y="0" width="856" height="540" fill="url(#glow-f)"></rect>
+    <g stroke="#FFFFFF" stroke-width="0.85" opacity="0.06"><line x1="0" y1="-40" x2="856" y2="-400"></line><line x1="0" y1="-40" x2="856" y2="320"></line><line x1="0" y1="-10" x2="856" y2="-370"></line><line x1="0" y1="-10" x2="856" y2="350"></line><line x1="0" y1="20" x2="856" y2="-340"></line><line x1="0" y1="20" x2="856" y2="380"></line><line x1="0" y1="50" x2="856" y2="-310"></line><line x1="0" y1="50" x2="856" y2="410"></line><line x1="0" y1="80" x2="856" y2="-280"></line><line x1="0" y1="80" x2="856" y2="440"></line><line x1="0" y1="110" x2="856" y2="-250"></line><line x1="0" y1="110" x2="856" y2="470"></line><line x1="0" y1="140" x2="856" y2="-220"></line><line x1="0" y1="140" x2="856" y2="500"></line><line x1="0" y1="170" x2="856" y2="-190"></line><line x1="0" y1="170" x2="856" y2="530"></line><line x1="0" y1="200" x2="856" y2="-160"></line><line x1="0" y1="200" x2="856" y2="560"></line><line x1="0" y1="230" x2="856" y2="-130"></line><line x1="0" y1="230" x2="856" y2="590"></line><line x1="0" y1="260" x2="856" y2="-100"></line><line x1="0" y1="260" x2="856" y2="620"></line><line x1="0" y1="290" x2="856" y2="-70"></line><line x1="0" y1="290" x2="856" y2="650"></line><line x1="0" y1="320" x2="856" y2="-40"></line><line x1="0" y1="320" x2="856" y2="680"></line><line x1="0" y1="350" x2="856" y2="-10"></line><line x1="0" y1="350" x2="856" y2="710"></line><line x1="0" y1="380" x2="856" y2="20"></line><line x1="0" y1="380" x2="856" y2="740"></line><line x1="0" y1="410" x2="856" y2="50"></line><line x1="0" y1="410" x2="856" y2="770"></line><line x1="0" y1="440" x2="856" y2="80"></line><line x1="0" y1="440" x2="856" y2="800"></line><line x1="0" y1="470" x2="856" y2="110"></line><line x1="0" y1="470" x2="856" y2="830"></line><line x1="0" y1="500" x2="856" y2="140"></line><line x1="0" y1="500" x2="856" y2="860"></line><line x1="0" y1="530" x2="856" y2="170"></line><line x1="0" y1="530" x2="856" y2="890"></line><line x1="0" y1="560" x2="856" y2="200"></line><line x1="0" y1="560" x2="856" y2="920"></line></g>
+
+    
+    <g transform="translate(54,40) scale(0.66)">
+    <path d="M16 100 L46 24 L76 100 Z" fill="#FFFFFF"></path>
+    <path d="M50 100 L80 38 L110 100 Z" fill="#E85D2C"></path>
+    <path d="M6 108 L118 108" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.85"></path>
+    <path d="M22 118 Q34 114 46 118 T70 118 T94 118" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.51"></path>
+  </g>
+    <text x="146" y="118" font-family="&#39;Fraunces&#39;, Georgia, serif" font-weight="500" font-size="58" fill="#FFFFFF" letter-spacing="-1">Mana</text>
+
+    
+    <g transform="translate(62,210)">
+      <rect x="0" y="0" width="74" height="56" rx="9" fill="url(#chip-f)"></rect>
+      <g stroke="#8A6A24" stroke-width="2" opacity="0.7" fill="none">
+        <line x1="0" y1="19" x2="74" y2="19"></line>
+        <line x1="0" y1="37" x2="74" y2="37"></line>
+        <line x1="26" y1="0" x2="26" y2="56"></line>
+        <line x1="48" y1="0" x2="48" y2="56"></line>
+      </g>
+    </g>
+    
+    <g transform="translate(160,214)" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" opacity="0.85">
+      <path d="M2 14 a16 16 0 0 1 0 22"></path>
+      <path d="M12 8 a28 28 0 0 1 0 34"></path>
+      <path d="M22 2 a40 40 0 0 1 0 46"></path>
+    </g>
+
+    
+    <text x="60" y="368" font-family="&#39;JetBrains Mono&#39;, &#39;Courier New&#39;, monospace" font-weight="500" font-size="38" fill="#FFFFFF" letter-spacing="6" opacity="0.96">4218  5520  8841  0274</text>
+
+    
+    <text x="60" y="436" font-family="&#39;Manrope&#39;, sans-serif" font-weight="500" font-size="15" fill="#FFFFFF" opacity="0.55" letter-spacing="1.5">VALID THRU  08/29</text>
+    <text x="60" y="492" font-family="&#39;Manrope&#39;, sans-serif" font-weight="500" font-size="26" fill="#FFFFFF" letter-spacing="2" opacity="0.96">MARIA SANTOS</text>
+
+    
+    
+    <text x="690" y="476" font-family="&#39;Fraunces&#39;, Georgia, serif" font-style="italic" font-weight="600" font-size="48" fill="#FFFFFF" letter-spacing="-1">VISA</text>
+    <text x="694" y="504" font-family="&#39;Manrope&#39;, sans-serif" font-weight="400" font-size="20" fill="#FFFFFF" letter-spacing="0.5" opacity="0.92">Signature</text>
+  </g>
+</svg>

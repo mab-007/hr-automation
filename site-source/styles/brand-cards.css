@@ -1,0 +1,60 @@
+.brand-card { display:block; height:100%; color:#302c26; text-decoration:none; }
+.brand-card__frame { position:relative; height:calc(100% - 58px); border-radius:10px; overflow:hidden; background:#e7e1d7; box-shadow:0 12px 24px -18px #31271f44; }
+.brand-card__frame > .brand-preview { transition:transform .7s cubic-bezier(.2,.7,.2,1); }
+@media(hover:hover) { .brand-card:hover .brand-card__frame > .brand-preview { transform:scale(1.035); } }
+.brand-card:focus-visible { outline:2px solid #9E2A2B; outline-offset:6px; border-radius:8px; }
+.brand-card__tag { position:absolute; right:18px; bottom:18px; padding:8px 12px; background:#f2f1eee8; color:#302c26; border:1px solid #302c2617; border-radius:30px; font-size:10px; letter-spacing:.06em; }
+.brand-card__caption { display:flex; align-items:center; gap:12px; height:58px; }
+.brand-card__caption h3 { font-size:20px; font-weight:500; letter-spacing:-.035em; }
+.brand-card__number { font:10px monospace; color:#8c8170; }
+.brand-card__category { margin-left:auto; font-size:10px; color:#827867; }
+.brand-preview { position:relative; width:100%; height:100%; overflow:hidden; container-type:size; background:#f0eade; color:#302c26; }
+.brand-preview__image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.brand-preview__wash { position:absolute; inset:0; pointer-events:none; }
+.brand-preview__nav { position:absolute; top:6%; left:7%; right:7%; display:flex; justify-content:space-between; align-items:center; font-size:clamp(14px,3.3cqw,32px); font-weight:600; letter-spacing:-.04em; z-index:1; }
+.brand-preview__nav > :last-child { font:500 clamp(7px,1.1cqw,13px) Arial,sans-serif; letter-spacing:0; }
+.brand-preview__copy { position:absolute; left:7%; right:7%; top:24%; }
+.brand-preview__eyebrow { font-size:clamp(7px,1cqw,12px); text-transform:uppercase; letter-spacing:.18em; }
+.brand-preview__copy h3 { margin:3% 0 5%; white-space:pre-line; font-size:clamp(25px,7cqw,92px); line-height:1.02; font-weight:500; letter-spacing:-.055em; }
+.brand-preview__cta { display:inline-flex; gap:22px; align-items:center; border:1px solid currentColor; padding:1.2cqw 2cqw; border-radius:30px; font-size:clamp(7px,1cqw,13px); }
+.brand-preview__domain { position:absolute; bottom:5%; left:7%; font:clamp(7px,.9cqw,11px) monospace; opacity:.6; }
+.brand-preview--olorin .brand-preview__image { width:65%; height:85%; inset:auto -12% -10% auto; object-fit:contain; mix-blend-mode:multiply; opacity:.85; }
+.brand-preview--olorin .brand-preview__copy { right:30%; }
+.brand-preview--olorin .brand-preview__copy h3 { font-family:Georgia,serif; font-weight:400; }
+.brand-preview--nadi { background:#fff; }
+.brand-preview--nadi .brand-preview__image { object-fit:contain; }
+.brand-preview--nadi .brand-preview__domain { opacity:.45; }
+.brand-preview--mana { background:radial-gradient(ellipse at 100% 100%,#485753,#132c29 60%); color:#f7f0de; }
+.brand-preview--mana .brand-preview__image { inset:auto -6% 6% auto; width:62%; height:48%; object-fit:contain; transform:rotate(-14deg); filter:drop-shadow(0 20px 18px #0004); }
+.brand-preview--mana .brand-preview__copy { top:20%; }
+.brand-preview--mana .brand-preview__copy h3 { font-family:Georgia,serif; font-weight:400; }
+.brand-preview--slice { color:#fff; }
+.brand-preview--slice .brand-preview__wash { background:linear-gradient(130deg,#00345555,transparent 70%); }
+.brand-preview--slice .brand-preview__nav > :first-child { font-size:1.6em; font-style:italic; }
+.brand-preview--slice .brand-preview__copy { top:29%; text-shadow:0 2px 18px #00304b30; }
+.brand-preview--commenda { color:#172f48; }
+.brand-preview--commenda .brand-preview__image { object-position:50% 60%; }
+.brand-preview--commenda .brand-preview__wash { background:linear-gradient(#f8f2eada,transparent 70%); }
+.brand-preview--commenda .brand-preview__copy { top:23%; }
+.brand-preview--commenda .brand-preview__copy h3 { font-family:Georgia,serif; font-weight:400; }
+.brand-preview--raaz { color:#f8f5df; }
+.brand-preview--raaz .brand-preview__image { object-position:65% 50%; }
+.brand-preview--raaz .brand-preview__wash { background:linear-gradient(90deg,#123e48b8,transparent 90%); }
+.brand-preview--raaz .brand-preview__copy { top:34%; }
+.brand-preview--raaz .brand-preview__copy h3 { font-family:Georgia,serif; font-weight:400; }
+@media(prefers-reduced-motion:reduce) { .brand-card__frame > .brand-preview { transition:none; } }
+
+/* Actual first hero sections for the two education products in choreography. */
+.actual-nadi { width:100%; height:100%; background:#fdfdfd; display:grid; place-items:center; }
+.actual-nadi img { display:block; width:100%; height:100%; object-fit:contain; }
+.actual-olorin { container-type:size; position:relative; width:100%; height:100%; background:linear-gradient(#7ba6f6,#2563eb 45%,#1b3478); color:#fff; font-family:Outfit,Arial,sans-serif; overflow:hidden; }
+.actual-olorin canvas { position:absolute; inset:0; width:100%; height:100%; }
+.actual-olorin__nav { position:absolute; top:4%; left:5%; right:5%; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.actual-olorin__nav > span { display:flex; align-items:center; gap:2cqw; padding:.6cqw 1cqw; border:1px solid #ffffff29; border-radius:99px; background:#0c102042; backdrop-filter:blur(16px); }
+.actual-olorin__nav b { font-size:clamp(10px,2cqw,26px); font-weight:500; }
+.actual-olorin__nav i,.actual-olorin__nav em { font-size:clamp(6px,1.1cqw,15px); font-style:normal; }
+.actual-olorin__nav em { background:#fff; color:#111; border-radius:99px; padding:.7cqw 1.4cqw; }
+.actual-olorin__copy { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2cqw; padding:10% 8%; text-align:center; }
+.actual-olorin__copy h3 { font-size:clamp(20px,7.6cqw,116px); letter-spacing:-.035em; font-weight:500; line-height:1.02; background:linear-gradient(#fff 30%,#d6e4fb); color:transparent; background-clip:text; filter:drop-shadow(0 2px 22px #00000029); }
+.actual-olorin__copy p { max-width:50ch; color:#ffffffd6; font-size:clamp(7px,1.3cqw,19px); line-height:1.5; }
+.actual-olorin__copy > span { padding:1cqw 2cqw; border-radius:99px; border:1px solid #ffffff2e; background:#0a0e1c6b; font-size:clamp(7px,1cqw,15px); }

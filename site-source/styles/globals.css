@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color-scheme: light;
+  background: #f2f1ee;
+}
+
+html, body, #root {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+}
+
+@font-face { font-family:"Barlow Condensed"; src:url("../reference-assets/barlow-condensed-bold.ttf") format("truetype"); font-style:normal; font-weight:700; font-display:swap; }

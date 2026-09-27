@@ -1,0 +1,36 @@
+.wemake{--c-bg:#ebebeb;--c-pink:#ff005c;--c-border:#c4c4c4}
+.wemake{--wemake-pad-x:clamp(24px,4.3vw,83px);background-color:var(--c-bg);overflow:clip}.wemake,.wemake__screen{position:relative}.wemake__screen--intro{height:100vh;height:100svh}.wemake__intro-media{inset:0;position:absolute;will-change:transform,opacity}.wemake__intro-media img,.wemake__intro-media video{height:100%;-o-object-fit:cover;object-fit:cover;width:100%}.wemake__screen--cards{background-color:var(--c-bg);padding:clamp(48px,7vh,96px) var(--wemake-pad-x)}.wemake__artboard{height:100%;left:0;overflow:hidden;pointer-events:none;position:absolute;top:0;width:100vw;will-change:transform}@media(max-width:575.98px){.wemake__artboard{display:none}}.wemake__artboard img{height:auto;left:0;max-width:none;opacity:.65;position:absolute;top:50%;transform:translateY(-50%);-webkit-user-select:none;-moz-user-select:none;user-select:none;width:100%}@media(min-width:1025px){.wemake__artboard img{height:100%;left:0;-o-object-fit:cover;object-fit:cover;right:auto;top:0;transform:none;width:100%}}.wemake__content{position:relative}.wemake__title{color:#2e2e2e;font-size:clamp(34px,3.9vw,75px);font-weight:600;line-height:1.16;margin-bottom:clamp(28px,4.5vh,48px)}.wemake__accent{color:var(--c-pink)}.wemake__cards{display:flex;gap:clamp(20px,2.1vw,40px);list-style:none;margin:0;padding:0}.wemake__progress{display:none}.wemake-card{aspect-ratio:321/435;border-radius:clamp(16px,1.46vw,28px);flex:0 0 auto;overflow:hidden;width:clamp(280px,19.41vw,373px)}.wemake-card img,.wemake-card video{height:100%;-o-object-fit:cover;object-fit:cover;width:100%}.wemake-card__link{display:block;height:100%;width:100%}.wemake-card__link img,.wemake-card__link video{transition:transform .7s cubic-bezier(.22,1,.36,1)}@media(hover:hover)and (pointer:fine){.wemake-card__link:hover img,.wemake-card__link:hover video{transform:scale(1.05)}}.wemake--pinned .wemake__inner{display:flex;width:-moz-max-content;width:max-content;will-change:transform}.wemake--pinned .wemake__screen{flex-shrink:0;height:100vh;height:100svh;width:100vw}.wemake--pinned .wemake__screen--cards{display:flex;flex-direction:column;justify-content:center;min-width:100vw;width:auto}.wemake--pinned .wemake__content{min-width:calc(100vw - var(--wemake-pad-x)*2);width:-moz-max-content;width:max-content}.wemake--pinned .wemake__title{will-change:transform}@media(min-width:1025px)and (max-height:760px){.wemake__title{font-size:clamp(28px,3vw,54px);margin-bottom:20px}.wemake-card{width:clamp(240px,19.41vw,340px)}}@media(max-width:1024px){.wemake__screen--intro{height:70vh;height:70svh}.wemake__cards{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin-inline:calc(var(--wemake-pad-x)*-1);padding-inline:var(--wemake-pad-x);scroll-padding-inline:var(--wemake-pad-x);scrollbar-width:none}.wemake__cards::-webkit-scrollbar{display:none}.wemake-card{flex:0 0 clamp(220px,60vw,320px);scroll-snap-align:start}.wemake__progress{background:var(--c-border);border-radius:2px;display:block;height:3px;margin-top:14px;overflow:hidden}.wemake__progress-fill{background:var(--c-pink);display:block;height:100%;transform:scaleX(0);transform-origin:0 50%;width:100%}}
+
+.wemake__title{margin-top:0;letter-spacing:-.035em}
+.wemake-card__link:focus-visible{outline:3px solid #9E2A2B;outline-offset:-5px}
+@media(prefers-reduced-motion:reduce){
+  .wemake__cards{overflow-x:auto;padding-bottom:12px}
+  .wemake__screen--intro{height:70svh}
+  .wemake-card__link img{transition:none}
+}
+
+/* Browser-owned vertical pinning avoids scroll/transform feedback jitter. */
+.wemake--pinned .wemake__viewport {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+.wemake--pinned .wemake__inner {
+  backface-visibility: hidden;
+}
+.wemake { overflow-anchor: none; }
+
+/* Warm paper carries the Courage palette through the film and portfolio. */
+.wemake { --c-bg:#f2f1ee; --c-pink:#9E2A2B; --c-border:#d5ccbd; }
+.wemake__intro-media { background:#f2f1ee; isolation:isolate; }
+.wemake__intro-media video { mix-blend-mode:multiply; filter:grayscale(1) brightness(1.08); }
+.wemake__artboard { opacity:.35; }
+.wemake__title { color:#302c26; }
+
+.wemake-card.portfolio-card { width:clamp(340px,34vw,540px); aspect-ratio:.91; border-radius:0; overflow:visible; }
+
+.wemake__title { font-weight:500; font-size:clamp(34px,4vw,64px); letter-spacing:-.05em; }
+@media(min-width:1025px) and (max-height:800px) { .wemake-card.portfolio-card { width:clamp(300px,29vw,400px); } }
+@media(max-width:1024px) { .wemake-card.portfolio-card { flex:0 0 clamp(290px,78vw,440px); } }
