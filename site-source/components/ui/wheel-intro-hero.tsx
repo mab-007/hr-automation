@@ -7,7 +7,7 @@ import "../../styles/wheel-intro.css"
 
 export default function WheelIntroHero() {
   const root = useRef<HTMLElement>(null)
-  const [frame, setFrame] = useState({ progress: 0, angle: 0, diameter: 440, startX: 36, reduced: false })
+  const [frame, setFrame] = useState({ progress: 0, angle: 0, diameter: 440, startX: 36, startY: 278, reduced: false })
 
   useEffect(() => {
     const media = matchMedia("(prefers-reduced-motion: reduce)")
@@ -22,15 +22,17 @@ export default function WheelIntroHero() {
       const dt = last ? Math.min(now - last, 50) : 16
       last = now
       const bounds = root.current.getBoundingClientRect()
-      const target = clamp01(-bounds.top / Math.max(1, bounds.height - innerHeight))
+      const target = clamp01(-bounds.top / Math.max(1, bounds.height - (root.current.firstElementChild as HTMLElement).offsetHeight))
       const previousProgress = progress
       progress += (target - progress) * (1 - Math.exp(-dt / 65))
       if (Math.abs(target - progress) < .00005) progress = target
       const settle = smooth(0, .36, progress)
       // Keep rotation clockwise as the wheel shrinks; never unwind its angle.
       if (!media.matches) angle += dt * .025 * (1 - settle) + Math.max(0, Math.min(progress, .36) - Math.min(previousProgress, .36)) * 720
-      const scale = Math.min(innerWidth / 928, innerHeight / 468)
-      setFrame({ progress, angle, diameter: Math.min(innerWidth * .84, innerHeight * .94) / scale, startX: 500 - innerWidth / (2 * scale), reduced: media.matches })
+      const stageHeight = (root.current.firstElementChild as HTMLElement).offsetHeight
+      const scale = Math.min(innerWidth / 928, stageHeight / 468)
+      const mobile = innerWidth <= 640
+      setFrame({ progress, angle, diameter: Math.min(innerWidth * (mobile ? 1.35 : .84), stageHeight * .94) / scale, startX: 500 - innerWidth / (2 * scale), startY: 278 + (mobile ? stageHeight * .18 / scale : 0), reduced: media.matches })
       if (!media.matches && (settle < 1 || progress !== target)) raf = requestAnimationFrame(tick)
     }
     const request = () => { if (!raf) { last = 0; raf = requestAnimationFrame(tick) } }
@@ -58,7 +60,7 @@ export default function WheelIntroHero() {
   return <section ref={root} className="wheel-intro" aria-label="Wheel365 — from idea to launch">
     <div className="wheel-intro__stage">
       <TigerTearReveal word="Wheel 365" tagline="" hint={false} progress={tear} wordMark={<>
-        <Wheel365Mark settle={settle} reveal={reveal} startDiameter={frame.diameter} startX={frame.startX} rotation={frame.reduced ? 0 : frame.angle} />
+        <Wheel365Mark settle={settle} reveal={reveal} startDiameter={frame.diameter} startX={frame.startX} startY={frame.startY} rotation={frame.reduced ? 0 : frame.angle} />
         <text x="500" y="150" textAnchor="middle" fill={WHEEL_INK} opacity={reveal} style={{ fontFamily: '"Barlow Condensed", sans-serif', fontSize: 32, fontWeight: 700, letterSpacing: ".04em" }}>FROM IDEA TO LAUNCH</text>
       </>} />
       <div className="wheel-intro__copy" style={{ opacity: copy, visibility: copy > 0 ? "visible" : "hidden", transform: `translateY(calc(-50% - ${(1 - copy) * 24}px))` }}>

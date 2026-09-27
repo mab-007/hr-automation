@@ -7,3 +7,14 @@
 .wheel-intro__statement{margin:32px 0 0;font:500 clamp(16px,2vw,30px)/1.4 Arial,sans-serif;letter-spacing:-.025em}
 @media(max-width:640px){.wheel-intro__copy{left:46%;right:3%}.wheel-intro__copy h1{font-size:clamp(27px,7vw,45px)}.wheel-intro__label{font-size:9px;margin-bottom:26px}.wheel-intro__statement{font-size:15px;margin-top:22px}.wheel-intro__hint{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.wheel-intro{height:100svh}}
+
+/* Portrait composition and a shorter, continuous scroll sequence. */
+@media(max-width:640px){
+ .wheel-intro{height:235svh}
+ .wheel-intro__copy{top:23%;left:7%;right:7%}
+ .wheel-intro__copy h1{font-size:clamp(32px,10.5vw,64px);line-height:1.02}
+ .wheel-intro__label{margin-bottom:20px;font-size:10px}
+ .wheel-intro__statement{margin-top:18px;font-size:18px}
+ .wheel-intro__hint{bottom:max(20px,env(safe-area-inset-bottom));font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.wheel-intro{height:100svh}}

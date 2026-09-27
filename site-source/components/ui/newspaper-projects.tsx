@@ -6,11 +6,37 @@ import { brands } from "@/lib/brands"
 import { BrandCard } from "@/components/ui/brand-preview"
 
 const newspaper = new URL("../../reference-assets/goat-what-we-do.webm", import.meta.url).href
+const newspaperMp4 = new URL("../../reference-assets/goat-what-we-do.mp4", import.meta.url).href
 const poster = new URL("../../reference-assets/goat-what-we-do-poster.jpg", import.meta.url).href
 const artboard = new URL("../../reference-assets/goat-wemake-artboard.svg", import.meta.url).href
 /** Newspaper introduction, six selected projects and collaborations. */
 export default function NewspaperProjects() {
   const rootRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const mobile = matchMedia("(max-width: 640px)")
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)")
+    const cards = [...rootRef.current!.querySelectorAll<HTMLElement>(".wemake-card")]
+    let observer: IntersectionObserver | undefined
+    const update = () => {
+      observer?.disconnect()
+      cards.forEach(card => card.classList.remove("mobile-reveal", "is-visible"))
+      if (!mobile.matches || reduced.matches) return
+      observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible")
+            observer?.unobserve(entry.target)
+          }
+        })
+      }, { threshold: .08 })
+      cards.forEach(card => { card.classList.add("mobile-reveal"); observer!.observe(card) })
+    }
+    update()
+    mobile.addEventListener("change", update)
+    reduced.addEventListener("change", update)
+    return () => { observer?.disconnect(); mobile.removeEventListener("change", update); reduced.removeEventListener("change", update) }
+  }, [])
 
   useEffect(() => {
     const section = rootRef.current!
@@ -154,6 +180,7 @@ export default function NewspaperProjects() {
         <div className="wemake__screen wemake__screen--intro">
           <div className="wemake__intro-media">
             <video muted playsInline preload="auto" poster={poster} aria-label="What we do — animated newspaper">
+              <source src={newspaperMp4} type="video/mp4" />
               <source src={newspaper} type="video/webm" />
             </video>
           </div>

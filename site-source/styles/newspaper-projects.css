@@ -34,3 +34,17 @@
 .wemake__title { font-weight:500; font-size:clamp(34px,4vw,64px); letter-spacing:-.05em; }
 @media(min-width:1025px) and (max-height:800px) { .wemake-card.portfolio-card { width:clamp(300px,29vw,400px); } }
 @media(max-width:1024px) { .wemake-card.portfolio-card { flex:0 0 clamp(290px,78vw,440px); } }
+
+/* Mobile follows the vertical gesture: compact film, then full-width projects. */
+@media(max-width:640px){
+ .wemake__screen--intro{height:auto;aspect-ratio:16/10}
+ .wemake__intro-media video{object-fit:contain}
+ .wemake__screen--cards{padding:36px 20px 20px}
+ .wemake__title{font-size:38px;margin-bottom:28px}
+ .wemake__cards{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;margin:0;padding:0;overflow:visible}
+ .wemake-card.portfolio-card{width:100%;min-width:0;aspect-ratio:1.08}
+ .wemake__progress{display:none}
+ .wemake-card.mobile-reveal{opacity:0;transform:translateY(32px);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+ .wemake-card.mobile-reveal.is-visible{opacity:1;transform:none}
+}
+@media(prefers-reduced-motion:reduce){.wemake-card.mobile-reveal{opacity:1;transform:none;transition:none}}

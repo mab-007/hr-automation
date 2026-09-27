@@ -4,7 +4,7 @@ const wheel = new URL("../../reference-assets/wheel-smooth.png", import.meta.url
 export const WHEEL_INK = "#9E2A2B"
 
 /** User-supplied smooth-rim wheel, sized to the actual visible numeral height. */
-export default function Wheel365Mark({ settle = 1, reveal = 1, startDiameter = 440, startX = 500, rotation = 0 }: { settle?: number; reveal?: number; startDiameter?: number; startX?: number; rotation?: number }) {
+export default function Wheel365Mark({ settle = 1, reveal = 1, startDiameter = 440, startX = 500, startY = 278, rotation = 0 }: { settle?: number; reveal?: number; startDiameter?: number; startX?: number; startY?: number; rotation?: number }) {
   const inkId = `wheel-ink-${useId().replace(/[^a-zA-Z0-9]/g, "")}`
   const textRef = useRef<SVGTextElement>(null)
   const [size, setSize] = useState({ top: 202, height: 206 })
@@ -32,7 +32,7 @@ export default function Wheel365Mark({ settle = 1, reveal = 1, startDiameter = 4
           <feColorMatrix type="matrix" values="0 0 0 0 0.619608  0 0 0 0 0.164706  0 0 0 0 0.168627  0 -4 0 3 0" />
         </filter>
       </defs>
-      <g transform={`translate(${startX + (274 - startX) * settle} ${278 + (size.top + size.height / 2 - 278) * settle}) rotate(${rotation})`}>
+      <g transform={`translate(${startX + (274 - startX) * settle} ${startY + (size.top + size.height / 2 - startY) * settle}) rotate(${rotation})`}>
       <svg x={-(startDiameter + (size.height - startDiameter) * settle) / 2} y={-(startDiameter + (size.height - startDiameter) * settle) / 2} width={startDiameter + (size.height - startDiameter) * settle} height={startDiameter + (size.height - startDiameter) * settle} viewBox="0 4 1016 1016" overflow="hidden">
         <image href={wheel} width="1016" height="1024" filter={`url(#${inkId})`} />
       </svg>

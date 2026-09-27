@@ -67,3 +67,21 @@
 .impact__markets > .impact__market-row { display:flex; gap:16px; white-space:nowrap; font-size:clamp(16px,2.2vw,35px); line-height:1.45; }
 .impact__market-row > span { display:inline-flex; align-items:center; gap:6px; }
 @media(max-width:480px) { .impact__markets > .impact__market-row { gap:10px; font-size:16px; } .impact__market-row > span { gap:4px; } }
+
+@media(max-width:640px){
+ .impact{padding:44px 20px;gap:24px}
+ .impact__intro h2{font-size:42px;line-height:1.05;margin:20px 0}
+ .impact__intro h2 br{display:none}
+ .impact__intro h2 em{display:block}
+ .impact__grid{gap:0 16px}
+ .impact__stat{padding:20px 0}
+ .impact__stat dd{font-size:60px;margin:16px 0 12px}
+ .impact__stat .impact__gtv{font-size:34px}
+ .impact__markets > .impact__market-row{font-size:14px;gap:6px}
+ .portfolio-contact{padding:32px 20px 28px}
+ .portfolio-contact__cta{gap:12px;padding:36px 0 28px}
+ .portfolio-contact__cta h2{font-size:15vw}
+ .footer-contact-details>a{font-size:20px;min-height:36px}
+ .footer-social-links a{display:inline-flex;align-items:center;min-height:44px}
+ .footer-contact-right .footer-phone{min-height:44px;display:inline-flex;align-items:center}
+}
