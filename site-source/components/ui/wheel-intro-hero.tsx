@@ -63,7 +63,7 @@ export default function WheelIntroHero() {
       </>} />
       <div className="wheel-intro__copy" style={{ opacity: copy, visibility: copy > 0 ? "visible" : "hidden", transform: `translateY(calc(-50% - ${(1 - copy) * 24}px))` }}>
         <p className="wheel-intro__label">WHEEL / 365</p>
-        <h1>Ideas don’t<br />stand still.</h1>
+        <h1>IDEAS DON’T<br />STAND STILL.</h1>
         <p className="wheel-intro__statement">Neither do we.</p>
       </div>
       <div className="wheel-intro__hint" aria-hidden="true" style={{ opacity: frame.reduced ? 0 : 1 - smooth(0, .08, frame.progress) }}>SCROLL TO SET IT IN MOTION ↓</div>
